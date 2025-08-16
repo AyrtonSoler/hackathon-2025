@@ -1,0 +1,11 @@
+{
+  "name": "orientacion-ia-frontend",
+  "private": true,
+  "version": "0.0.0",
+  "description": "Esqueleto del frontend (definir stack y dependencias).",
+  "scripts": {
+    "dev": "echo "Define script de desarrollo (p.ej., next dev)"",
+    "build": "echo "Define script de build"",
+    "start": "echo "Define script de start""
+  }
+}
