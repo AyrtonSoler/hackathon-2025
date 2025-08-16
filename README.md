@@ -16,4 +16,4 @@ Monorepo para la plataforma de orientación vocacional con IA (ChatGPT-5), backe
 3. Define el stack del frontend (sugerencias en `frontend/README.md`).
 4. Elige despliegue: Heroku/AWS para backend; S3+CloudFront/Amplify/Vercel para frontend.
 
-> Fecha de creación del esqueleto: 2025-08-16
+> Fecha de creación del esqueleto: 2025-08-16 
