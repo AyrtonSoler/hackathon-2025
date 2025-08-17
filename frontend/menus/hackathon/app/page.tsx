@@ -3,6 +3,7 @@ import Link from 'next/link';
 import Pentagon from '../components/Pentagon'; // ajusta la ruta según donde esté tu componente
 import ChatAI from '../components/ChatAI';     // aquí parecía estar en ../../ChatAI, asegúrate que sea correcta
 import React from 'react';
+import BackendStatus from '../components/BackendStatus';
 
 export default function HomePage() {
   const skills = [
@@ -26,6 +27,7 @@ export default function HomePage() {
       <header className="dashboard-header">
         <h1 className="dashboard-title">Dashboard del Futuro</h1>
         <p className="dashboard-subtitle">Un nuevo camino para tu desarrollo.</p>
+        <BackendStatus />
       </header>
 
       <div className="grid-layout">
