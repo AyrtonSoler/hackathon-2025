@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import ConstellationLearningMap from '../../components/ConstellationLearningMap'; // 👈 Importa el componente
+import ConstellationLearningMap from '../../components/ConstellationLearningMap';
 
 export default function CompetenciasPage() {
   return (
@@ -12,18 +12,14 @@ export default function CompetenciasPage() {
       </p>
 
       <div className="competencias-grid">
-        {/* Sección para el mapa estelar/grafo */}
-<section className="competencias-card competencias-mapa">
-  <h2 className="card-title">Mapa Estelar de Competencias</h2>
-<div className="mapa-placeholder w-full min-h-screen relative overflow-hidden">
+        <section className="competencias-card competencias-mapa">
+          <h2 className="card-title">Mapa Estelar de Competencias</h2>
+          {/* Aquí está la corrección: dale un ancho y una altura fijos */}
+<div className="mapa-placeholder w-[1200px] h-[700px] relative overflow-hidden flex items-center justify-center">
   <ConstellationLearningMap />
 </div>
-</section>
+        </section>
 
-
-
-
-        {/* Sección para las carreras sugeridas */}
         <section className="competencias-card carreras-sugeridas">
           <h2 className="card-title">Carreras Sugeridas</h2>
           <ul className="carreras-list">

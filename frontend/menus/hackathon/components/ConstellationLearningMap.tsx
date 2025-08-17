@@ -325,149 +325,83 @@ const visible = useMemo(() => {
 
   const center = { x: size.w / 2, y: size.h / 2 };
 
-  return (
-    <div className="w-full h-full bg-black text-white" ref={containerRef}>
-      {/* Header */}
-      <div className="absolute top-0 left-0 w-full p-4 flex flex-wrap gap-3 items-center justify-between bg-gradient-to-b from-black/70 to-transparent z-20">
-        <div className="flex items-center gap-3">
-          <div className="text-2xl font-semibold tracking-wide">{graph.title}</div>
-          <div className="text-xs text-white/60">{graph.tags?.map(t=>`#${t}`).join("  ")}</div>
-        </div>
-        <div className="flex gap-2 items-center">
-          <input
-            className="px-3 py-1.5 rounded-xl bg-white/10 outline-none focus:ring ring-white/20 placeholder-white/60"
-            placeholder="Buscar por nombre o tag…"
-            value={filter}
-            onChange={(e)=>setFilter(e.target.value)}
+
+// =============== RENDERIZADO =================
+return (
+<div className="w-full h-screen bg-black relative" ref={containerRef}>
+
+    {/* Fondo estrellado */}
+    <Starfield width={size.w} height={size.h} count={260} />
+
+    {/* lienzo con ejes */}
+    <svg className="absolute inset-0 w-full h-full" aria-label="Mapa de constelación">
+      {/* halo central sutil */}
+      <defs>
+        <radialGradient id="halo" r="70%">
+          <stop offset="0%" stopColor="rgba(255,255,255,0.10)" />
+          <stop offset="100%" stopColor="rgba(255,255,255,0)" />
+        </radialGradient>
+        <filter id="glow">
+          <feGaussianBlur stdDeviation="3.5" result="coloredBlur"/>
+          <feMerge>
+            <feMergeNode in="coloredBlur" />
+            <feMergeNode in="SourceGraphic" />
+          </feMerge>
+        </filter>
+      </defs>
+
+      <circle cx={center.x} cy={center.y} r={Math.min(size.w,size.h)/2.1} fill="url(#halo)" />
+
+      {/* Líneas (edges) */}
+      {graph.edges.map(([a,b], i) => {
+        const pa = positions.get(a); const pb = positions.get(b);
+        if (!pa || !pb) return null;
+        const active = highlight.path.has(a) && highlight.path.has(b);
+        return (
+          <line key={i}
+            x1={pa.x} y1={pa.y} x2={pb.x} y2={pb.y}
+            className={`transition-all ${active ? "stroke-white" : "stroke-white/25"}`}
+            strokeWidth={active ? 2.4 : 1}
           />
-          <select
-            className="px-3 py-1.5 rounded-xl bg-white/10 outline-none focus:ring ring-white/20"
-            value={goal}
-            onChange={(e)=>setGoal(e.target.value)}
+        );
+      })}
+
+      {/* Nodos (estrellas) */}
+      {graph.nodes.map((n) => {
+        const p = positions.get(n.id); if (!p) return null;
+        const isInPath = highlight.path.has(n.id);
+        const isVisible = visible.has(n.id);
+        const r = isInPath ? 8 : 5;
+        const labelVisible = isInPath || isVisible;
+        return (
+          <g key={n.id} className="cursor-pointer select-none"
+             onPointerDown={(e)=>onPointerDown(n.id, e)}
+             onDoubleClick={() => toggleKnown(n.id)}
           >
-            {graph.nodes.map(n => (
-              <option key={n.id} value={n.id}>{n.id}</option>
-            ))}
-          </select>
-          <button onClick={addNodeQuick} className="px-3 py-1.5 rounded-xl bg-white/10 hover:bg-white/20">+ Nodo</button>
-          <button onClick={addEdgeQuick} className="px-3 py-1.5 rounded-xl bg-white/10 hover:bg-white/20">+ Relación</button>
-          <button onClick={exportJSON} className="px-3 py-1.5 rounded-xl bg-white/10 hover:bg-white/20">Exportar</button>
-          <label className="px-3 py-1.5 rounded-xl bg-white/10 hover:bg-white/20 cursor-pointer">
-            Importar
-            <input type="file" className="hidden" accept="application/json" onChange={(e)=> e.target.files?.[0] && importJSON(e.target.files[0])} />
-          </label>
-        </div>
-      </div>
-
-      {/* Fondo estrellado */}
-      <Starfield width={size.w} height={size.h} count={260} />
-
-      {/* lienzo con ejes */}
-      <svg className="absolute inset-0 w-full h-full" aria-label="Mapa de constelación">
-        {/* halo central sutil */}
-        <defs>
-          <radialGradient id="halo" r="70%">
-            <stop offset="0%" stopColor="rgba(255,255,255,0.10)" />
-            <stop offset="100%" stopColor="rgba(255,255,255,0)" />
-          </radialGradient>
-          <filter id="glow">
-            <feGaussianBlur stdDeviation="3.5" result="coloredBlur"/>
-            <feMerge>
-              <feMergeNode in="coloredBlur" />
-              <feMergeNode in="SourceGraphic" />
-            </feMerge>
-          </filter>
-        </defs>
-        <circle cx={center.x} cy={center.y} r={Math.min(size.w,size.h)/2.1} fill="url(#halo)" />
-
-        {/* Líneas (edges) */}
-        {graph.edges.map(([a,b], i) => {
-          const pa = positions.get(a); const pb = positions.get(b);
-          if (!pa || !pb) return null;
-          const active = highlight.path.has(a) && highlight.path.has(b);
-          return (
-            <line key={i}
-              x1={pa.x} y1={pa.y} x2={pb.x} y2={pb.y}
-              className={`transition-all ${active ? "stroke-white" : "stroke-white/25"}`}
-              strokeWidth={active ? 2.4 : 1}
+            <motion.circle
+              cx={p.x}
+              cy={p.y}
+              r={r}
+              filter="url(#glow)"
+              animate={{ opacity: isVisible ? 1 : 0.25, scale: isInPath ? [1,1.2,1] : 1 }}
+              transition={{ duration: isInPath ? 1.6 : 0.3, repeat: isInPath ? Infinity : 0 }}
+              className={`${known.has(n.id) ? "fill-white" : "fill-transparent"} stroke-white`}
+              strokeWidth={known.has(n.id) ? 1 : 1.5}
             />
-          );
-        })}
-
-        {/* Nodos (estrellas) */}
-        {graph.nodes.map((n) => {
-          const p = positions.get(n.id); if (!p) return null;
-          const isInPath = highlight.path.has(n.id);
-          const isVisible = visible.has(n.id);
-          const r = isInPath ? 8 : 5;
-          const labelVisible = isInPath || isVisible;
-          return (
-            <g key={n.id} className="cursor-pointer select-none"
-               onPointerDown={(e)=>onPointerDown(n.id, e)}
-               onDoubleClick={() => toggleKnown(n.id)}
-            >
-              <motion.circle
-                cx={p.x}
-                cy={p.y}
-                r={r}
-                filter="url(#glow)"
-                animate={{ opacity: isVisible ? 1 : 0.25, scale: isInPath ? [1,1.2,1] : 1 }}
-                transition={{ duration: isInPath ? 1.6 : 0.3, repeat: isInPath ? Infinity : 0 }}
-                className={`${known.has(n.id) ? "fill-white" : "fill-transparent"} stroke-white`}
-                strokeWidth={known.has(n.id) ? 1 : 1.5}
-              />
-              {labelVisible && (
-                <text x={p.x + 10} y={p.y - 10} className="text-xs fill-white">
-                  {n.id}
-                </text>
-              )}
-              {/* Marcador de conocido */}
-              {known.has(n.id) && (
-                <circle cx={p.x} cy={p.y} r={r+3} className="fill-white/10" />
-              )}
-            </g>
-          );
-        })}
-      </svg>
-
-      {/* Panel inferior: resumen de ruta */}
-      <div className="absolute bottom-0 left-0 w-full p-4 z-20">
-        <div className="max-w-5xl mx-auto grid md:grid-cols-2 gap-3">
-          <div className="bg-white/5 backdrop-blur rounded-2xl p-4 shadow-xl">
-            <div className="text-sm uppercase tracking-widest text-white/70 mb-1">Ruta sugerida</div>
-            <div className="text-lg font-semibold mb-2">De tus conocimientos → {goal}</div>
-            {highlight.path.size === 0 ? (
-              <div className="text-white/70">No se encontró una ruta desde tus conocimientos actuales.</div>
-            ) : (
-              <div className="flex flex-wrap gap-2 items-center">
-                {[...highlight.path].map((n, i, arr) => (
-                  <React.Fragment key={n}>
-                    <span className="px-2 py-1 rounded-xl bg-white/10">{n}</span>
-                    {i < arr.length - 1 && <span className="opacity-60">→</span>}
-                  </React.Fragment>
-                ))}
-              </div>
+            {labelVisible && (
+              <text x={p.x + 10} y={p.y - 10} className="text-xs fill-white">
+                {n.id}
+              </text>
             )}
-          </div>
-          <div className="bg-white/5 backdrop-blur rounded-2xl p-4 shadow-xl">
-            <div className="text-sm uppercase tracking-widest text-white/70 mb-1">Pasos recomendados (pendientes)</div>
-            {highlight.steps.length === 0 ? (
-              <div className="text-white/70">No hay pasos pendientes — ya cumples la ruta o no existe.</div>
-            ) : (
-              <ol className="list-decimal list-inside leading-7">
-                {highlight.steps.map((s) => (
-                  <li key={s}>{s}</li>
-                ))}
-              </ol>
+            {/* Marcador de conocido */}
+            {known.has(n.id) && (
+              <circle cx={p.x} cy={p.y} r={r+3} className="fill-white/10" />
             )}
-          </div>
-        </div>
-        <div className="max-w-5xl mx-auto mt-3 flex flex-wrap gap-2 text-sm text-white/80">
-          <span className="px-2 py-1 rounded-full bg-white/10">Doble click en una estrella: marcar/desmarcar como conocido</span>
-          <span className="px-2 py-1 rounded-full bg-white/10">Arrastra una estrella para reacomodar</span>
-          <span className="px-2 py-1 rounded-full bg-white/10">Usa el buscador para resaltar nodos</span>
-        </div>
-      </div>
-    </div>
-  );
+          </g>
+        );
+      })}
+    </svg>
+  </div>
+);
+
 }

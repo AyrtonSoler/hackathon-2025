@@ -290,18 +290,6 @@ body {
   padding: 2rem;
 }
 
-.mapa-placeholder {
-  height: 400px;
-  background-color: #e2e8f0;
-  border-radius: 8px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-top: 1.5rem;
-  color: #718096;
-  font-style: italic;
-  text-align: center;
-}
 
 .carreras-list {
   list-style: none;
