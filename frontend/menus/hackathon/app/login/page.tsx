@@ -29,6 +29,16 @@ export default function LoginPage() {
     }
   };
 
+  const handleDeleteAllUsers = () => {
+    if (window.confirm('¿Seguro que quieres borrar todos los usuarios? Esta acción no se puede deshacer.')) {
+      localStorage.removeItem('users');
+      localStorage.removeItem('currentUser');
+      setError('Todos los usuarios han sido borrados.');
+      setEmail('');
+      setPassword('');
+    }
+  };
+
   return (
     <div className="login-container">
       <form onSubmit={handleSubmit} className="login-form">
@@ -75,6 +85,15 @@ export default function LoginPage() {
           <Link href="/signup" className="signup-link">
             Crea una.
           </Link>
+        </div>
+        <div style={{ marginTop: '16px', textAlign: 'center' }}>
+          <button
+            type="button"
+            onClick={handleDeleteAllUsers}
+            style={{ background: '#e53e3e', color: 'white', padding: '0.5rem 1rem', borderRadius: '6px', border: 'none', cursor: 'pointer' }}
+          >
+            Borrar todos los usuarios
+          </button>
         </div>
       </form>
     </div>
