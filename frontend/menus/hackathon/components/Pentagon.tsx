@@ -155,7 +155,7 @@ export default function Pentagon() {
         {/* Polígono de valores */}
         <polygon
           points={polygonPoints}
-          fill="black"
+          fill="OceanBlue"
           fillOpacity={0.1}
           stroke="black"
           strokeWidth={2}
