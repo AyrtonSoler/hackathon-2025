@@ -1,10 +1,11 @@
+// frontend/menus/hackathon/components/ConstellationLearningMap.tsx
 'use client';
 
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 import { analyzeProfile, type StudentData } from '../lib/ai';
-import { getProjects } from '../lib/portfolio';          // ya lo tienes
-import { getProfileSummary } from '../lib/profile';       // ya lo tienes
+import { getProjects } from '../lib/portfolio';
+import { getProfileSummary } from '../lib/profile';
 
 // ---------- utils ----------
 const clamp = (x: number, lo = 0, hi = 100) => Math.min(hi, Math.max(lo, x));
@@ -15,7 +16,6 @@ type NodeT = { id: string };
 type Graph = { nodes: NodeT[]; edges: [string, string][] };
 
 function groupByRing(ids: string[]) {
-  // reparte en anillos para estética
   const rings: string[][] = [[], [], [], []];
   ids.forEach((k, i) => rings[i % rings.length].push(k));
   return rings;
@@ -28,7 +28,7 @@ function radialLayout(ids: string[], w: number, h: number) {
   rings.forEach((ring, r) => {
     const R = R0 + r * step;
     ring.forEach((id, i) => {
-      const theta = (2 * Math.PI * i) / ring.length + r * 0.25;
+      const theta = (2 * Math.PI * i) / Math.max(1, ring.length) + r * 0.25;
       pos.set(id, { x: cx + R * Math.cos(theta), y: cy + R * Math.sin(theta) });
     });
   });
@@ -67,7 +67,6 @@ export default function ConstellationLearningMap() {
 
   const [graph, setGraph] = useState<Graph>({ nodes: [], edges: [] });
   const [scores, setScores] = useState<Record<string, number>>({});
-  const [filter, setFilter] = useState('');
   const [drag, setDrag] = useState<{ id: string; dx: number; dy: number } | null>(null);
   const [positions, setPositions] = useState<Map<string, { x: number; y: number }>>(new Map());
   const [loading, setLoading] = useState(false);
@@ -117,16 +116,6 @@ export default function ConstellationLearningMap() {
     };
   }, [drag]);
 
-  // visible por filtro
-  const visible = useMemo(() => {
-    const q = filter.trim().toLowerCase();
-    const ids = new Set(graph.nodes.map(n => n.id));
-    if (!q) return ids;
-    const out = new Set<string>();
-    for (const n of graph.nodes) if (n.id.toLowerCase().includes(q)) out.add(n.id);
-    return out;
-  }, [filter, JSON.stringify(graph.nodes.map(n => n.id))]);
-
   // ========= IA: construir grafo desde Gemini =========
   async function recalcWithAI() {
     setLoading(true);
@@ -139,24 +128,25 @@ export default function ConstellationLearningMap() {
       const student: StudentData = {
         knowledgeTests: summary?.knowledgeTests ?? [],
         psychoTests: summary?.psychoTests ?? [],
-        projects: (projs || []).map((p: any) => ({ title: p.title, description: p.description ?? '', tags: [] })),
-        baseCompetencies: {},  // no forzamos base; dejamos que Gemini proponga
-        baseRadar: {},
+        projects: (projs || []).map((p: any) => ({ title: p.title, description: p.description ?? '' })),
+        baseCompetencies: {}, // dejamos que Gemini proponga
+        baseRadar: {},        // el radar ya lo maneja tu otro componente
       };
 
       const out = await analyzeProfile(student);
 
-      const suggested = out?.suggestedCompetencies ?? {};
-      const relations = (out?.relations ?? []).filter(
-        (pair): pair is [string, string] => Array.isArray(pair) && pair.length === 2 && pair.every(s => typeof s === 'string')
-      );
-
-      // construir grafo
+      // 🔑 Toma primero suggestedCompetencies; si no, cae a scores
+      const suggested = out?.suggestedCompetencies ?? out?.scores ?? {};
       const nodeIds = Object.keys(suggested);
-      const nodes: NodeT[] = nodeIds.map(id => ({ id }));
-      const validEdges: [string, string][] = relations.filter(([a, b]) => nodeIds.includes(a) && nodeIds.includes(b));
 
-      setGraph({ nodes, edges: validEdges });
+      // relaciones válidas
+      const relations = (out?.relations ?? []).filter(
+        (pair): pair is [string, string] =>
+          Array.isArray(pair) && pair.length === 2 && pair.every(s => typeof s === 'string')
+      );
+      const edges: [string, string][] = relations.filter(([a, b]) => nodeIds.includes(a) && nodeIds.includes(b));
+
+      setGraph({ nodes: nodeIds.map((id) => ({ id })), edges });
       setScores(suggested);
       setExplain(out?.explanations?.competencies || '');
     } catch (e) {
@@ -175,15 +165,14 @@ export default function ConstellationLearningMap() {
   const center = { x: size.w / 2, y: size.h / 2 };
 
   return (
-    <div className="relative w-full rounded-xl border bg-white/90 p-3 shadow" ref={containerRef}>
-      {/* barra superior */}
-      <div className="mb-2 flex flex-wrap items-center gap-2">
-        <input
-          className="rounded border px-3 py-1"
-          placeholder="Buscar competencia…"
-          value={filter}
-          onChange={(e) => setFilter(e.target.value)}
-        />
+    <div className="relative w-full rounded-2xl border bg-white/90 p-4 shadow" ref={containerRef}>
+      <div className="mb-3 flex items-center justify-between">
+        <div>
+          <h3 className="text-lg font-semibold">Mapa estelar de competencias</h3>
+          <p className="text-xs text-gray-600">
+            Sugerencias y relaciones generadas con IA según tus tests y proyectos.
+          </p>
+        </div>
         <button
           className="rounded bg-emerald-600 px-3 py-1 text-white disabled:opacity-60"
           onClick={recalcWithAI}
@@ -194,15 +183,13 @@ export default function ConstellationLearningMap() {
         </button>
       </div>
 
-      {/* explicación IA */}
       {explain && (
         <p className="mb-2 text-xs text-gray-600">
           <strong>IA:</strong> {explain}
         </p>
       )}
 
-      {/* fondo estrellas */}
-      <div className="relative h-[560px] w-full">
+      <div className="relative h-[540px] w-full">
         <Starfield width={size.w} height={size.h} />
 
         <svg className="absolute inset-0 h-full w-full" aria-label="Mapa estelar de competencias">
@@ -240,7 +227,6 @@ export default function ConstellationLearningMap() {
             const p = positions.get(n.id); if (!p) return null;
             const score = scores[n.id] ?? 50;
             const r = radiusFromScore(score);
-            const isVisible = visible.has(n.id);
             return (
               <g
                 key={n.id}
@@ -252,7 +238,7 @@ export default function ConstellationLearningMap() {
                   cy={p.y}
                   r={r}
                   filter="url(#glow)"
-                  animate={{ opacity: isVisible ? opacityFromScore(score) : 0.2, scale: [1, 1.08, 1] }}
+                  animate={{ opacity: opacityFromScore(score), scale: [1, 1.08, 1] }}
                   transition={{ duration: 2.2, repeat: Infinity }}
                   className="fill-black stroke-black"
                   strokeWidth={1.2}
@@ -268,6 +254,4 @@ export default function ConstellationLearningMap() {
       </div>
     </div>
   );
-
-
 }

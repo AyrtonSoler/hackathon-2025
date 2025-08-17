@@ -1,67 +1,82 @@
-// frontend/menus/hackathon/app/api/ai/chat/route.ts
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
-export const runtime = "nodejs"; // usar runtime de Node (no Edge)
+export const runtime = "nodejs";          // El SDK funciona mejor en Node que en Edge
+export const revalidate = 0;              // Sin caché
+export const dynamic = "force-dynamic";   // Evita páginas estáticas
 
-type Msg = { role: "user" | "ai"; content: string };
+const MODEL =
+  process.env.GOOGLE_GEMINI_MODEL ||
+  "gemini-1.5-flash"; // Cambia a "gemini-1.5-pro" si lo prefieres
 
-const MODEL = process.env.GEMINI_MODEL || "gemini-1.5-flash"; // cambia a "gemini-1.5-pro" si quieres
+function getClient() {
+  const key = process.env.GOOGLE_API_KEY || process.env.NEXT_PUBLIC_GOOGLE_API_KEY;
+  if (!key) throw new Error("Missing GOOGLE_API_KEY");
+  return new GoogleGenerativeAI(key);
+}
 
-export async function POST(req: NextRequest) {
+export async function POST(req: Request) {
   try {
-    const { message, history = [] } = (await req.json()) as {
-      message: string;
-      history?: Msg[];
-    };
+    const body = await req.json().catch(() => ({} as any));
+    const message: string = body?.message;
 
-    if (!process.env.GOOGLE_API_KEY) {
+    if (!message || typeof message !== "string") {
       return NextResponse.json(
-        { error: "Missing GOOGLE_API_KEY" },
-        { status: 500 }
+        { error: "Bad request", details: "Campo 'message' requerido (string)" },
+        { status: 400 }
       );
     }
-    if (!message || typeof message !== "string") {
-      return NextResponse.json({ error: "message is required" }, { status: 400 });
-    }
 
-    const genAI = new GoogleGenerativeAI(process.env.GOOGLE_API_KEY);
-    const model = genAI.getGenerativeModel({ model: MODEL });
-
-    // Historial del cliente → formato Gemini (máx. 8 turnos)
-    const geminiHistory = (history as Msg[]).slice(-8).map((m) => ({
-      role: m.role === "user" ? "user" : "model",
-      parts: [{ text: m.content }],
-    }));
-
-    // --- Contexto pedagógico (system prompt) recomendado ---
-    const systemIntro = {
-      role: "user" as const,
-      parts: [
-        {
-          text: [
-            "Actúa como tutor pedagógico en español para estudiantes de bachillerato.",
-            "Responde con claridad, paso a paso, y ejemplos breves cuando aporte.",
-            "Si falta información, pide aclaraciones antes de asumir.",
-          ].join("\n"),
-        },
-      ],
-    };
-
-    const chat = model.startChat({
-      history: [systemIntro, ...geminiHistory].slice(-9), // contexto máximo 9 entradas
+    const genAI = getClient();
+    const model = genAI.getGenerativeModel({
+      model: MODEL,
+      // ⬇️ Usa systemInstruction (no envíes role:"system" en contents)
+      systemInstruction:
+        "Eres un asistente breve, claro y útil para estudiantes. Responde en español, con máximo 4–6 líneas y sin relleno innecesario.",
       generationConfig: {
-        temperature: 0.6,
-        maxOutputTokens: 1024,
+        maxOutputTokens: 512,
+        temperature: 0.7,
       },
     });
 
-    const result = await chat.sendMessage(message);
-    const reply = result.response.text();
+    const result = await model.generateContent({
+      contents: [{ role: "user", parts: [{ text: message }]}],
+    });
 
-    return NextResponse.json({ reply });
+    const text = result?.response?.text?.() ?? "";
+    return NextResponse.json({ reply: text.trim() });
   } catch (err: any) {
-    console.error("Gemini error:", err?.message || err);
-    return NextResponse.json({ error: "AI service unavailable" }, { status: 500 });
+    // Normaliza estatus
+    const status =
+      err?.status ||
+      err?.response?.status ||
+      (typeof err?.message === "string" && err.message.toLowerCase().includes("quota")
+        ? 429
+        : 500);
+
+    // Intenta extraer cuerpo del error del SDK
+    let details = err?.message || "Unknown error";
+    try {
+      if (err?.response?.text) {
+        const bodyText = await err.response.text();
+        if (bodyText) details = bodyText;
+      }
+    } catch {
+      /* ignore */
+    }
+
+    console.error("[/api/ai/chat] error:", status, details);
+    return NextResponse.json({ error: `Gemini ${status}`, details }, { status });
   }
+}
+
+// (Opcional) Health check rápido
+export async function GET() {
+  return NextResponse.json({
+    ok: true,
+    model: MODEL,
+    env: {
+      hasKey: Boolean(process.env.GOOGLE_API_KEY || process.env.NEXT_PUBLIC_GOOGLE_API_KEY),
+    },
+  });
 }
