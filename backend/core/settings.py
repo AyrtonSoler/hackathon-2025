@@ -160,5 +160,5 @@ LOGGING = {
     "root": {
         "handlers": ["console"],
         "level": "INFO" if DEBUG else "WARNING",
-    },
+    }
 }
