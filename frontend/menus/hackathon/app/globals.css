@@ -326,3 +326,59 @@ body {
   gap: 1.5rem;
 }
 
+/* Estilos para el contenedor principal del administrador */
+.admin-container {
+  display: flex;
+  min-height: 100vh;
+  background-color: #f4f6f9; /* Un fondo gris claro */
+}
+
+/* Estilos para la barra lateral (sidebar) */
+.admin-sidebar {
+  width: 250px;
+  background-color: #fff; /* Fondo blanco */
+  padding: 20px;
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+.profile-section {
+  text-align: center;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #eee;
+}
+
+.profile-photo {
+  width: 80px;
+  height: 80px;
+  background-color: #ccc;
+  border-radius: 50%;
+  margin: 0 auto 10px;
+}
+
+.sidebar-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.nav-link {
+  color: #333;
+  text-decoration: none;
+  font-weight: 500;
+  padding: 10px 15px;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+}
+
+.nav-link:hover {
+  background-color: #e9ecef;
+}
+
+/* Estilos para el contenido principal */
+.admin-content {
+  flex-grow: 1;
+  padding: 40px;
+}
