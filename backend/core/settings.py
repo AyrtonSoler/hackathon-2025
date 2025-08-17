@@ -39,7 +39,8 @@ INSTALLED_APPS = [
     "accounts",
 
     # Propias
-    "ops_status",  # ← tu app de health
+    "ops_status",
+    "userprefs",# ← tu app de health
 ]
 
 MIDDLEWARE = [
@@ -50,6 +51,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "userprefs.middleware.PreferenceLocaleMiddleware",
 ]
 
 ROOT_URLCONF = "core.urls"
@@ -160,5 +162,10 @@ LOGGING = {
     "root": {
         "handlers": ["console"],
         "level": "INFO" if DEBUG else "WARNING",
-    }
+    },
+
 }
+# Redirecciones de autenticación (evita /accounts/profile/)
+LOGIN_URL = "/api-auth/login/"
+LOGIN_REDIRECT_URL = "/me/profile"       # o "/schema/swagger-ui/" o "/admin/"
+LOGOUT_REDIRECT_URL = "/api-auth/login/"
