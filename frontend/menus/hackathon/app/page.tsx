@@ -1,5 +1,7 @@
+
 import Link from 'next/link';
-import Pentagon from '../components/Pentagon';
+import Pentagon from '../components/Pentagon'; // ajusta la ruta según donde esté tu componente
+import ChatAI from '../components/ChatAI';     // aquí parecía estar en ../../ChatAI, asegúrate que sea correcta
 import React from 'react';
 
 export default function HomePage() {
@@ -124,9 +126,23 @@ export default function HomePage() {
           <h2 className="card-title">Recursos y Herramientas</h2>
           <div className="card-content">
             <p>Tests, quizzes, guías y el chatbot con IA.</p>
-            <div className="chatbot-placeholder">
-              <p>Aquí va el Chatbot con IA.</p>
-            </div>
+             <Link
+              href="/quizzes"
+              style={{
+                padding: '0.75rem 1.5rem',
+                borderRadius: '8px',
+                backgroundColor: '#0070f3',
+                color: 'white',
+                fontWeight: 'bold',
+                textDecoration: 'none',
+              }}
+            >
+              Ir a Quizzes
+            </Link>
+<div style={{ maxWidth: '500px', margin: '2rem auto' }}>
+      <h2>Chat con IA</h2>
+      <ChatAI />
+    </div>
           </div>
         </section>
 
