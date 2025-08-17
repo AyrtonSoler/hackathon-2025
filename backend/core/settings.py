@@ -29,6 +29,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "django_rq",
 
     # Terceros
     "rest_framework",
@@ -37,6 +38,7 @@ INSTALLED_APPS = [
     "drf_spectacular",
     "storages",
     "accounts",
+    "privacy",
 
     # Propias
     "ops_status",
@@ -128,7 +130,8 @@ REST_FRAMEWORK.setdefault(
 REST_FRAMEWORK.setdefault("DEFAULT_THROTTLE_RATES", {})
 REST_FRAMEWORK["DEFAULT_THROTTLE_RATES"].setdefault("anon", "50/min")
 REST_FRAMEWORK["DEFAULT_THROTTLE_RATES"].setdefault("user", "100/min")
-REST_FRAMEWORK["DEFAULT_THROTTLE_RATES"].setdefault("auth", "5/min")  # <- la clave del error
+REST_FRAMEWORK["DEFAULT_THROTTLE_RATES"].setdefault("auth", "5/min")
+REST_FRAMEWORK["DEFAULT_THROTTLE_RATES"].setdefault("privacy", "10/min")
 
 # SimpleJWT (por si aún no lo tenías)
 SIMPLE_JWT = {
@@ -171,8 +174,19 @@ LOGIN_URL = "/api-auth/login/"
 LOGIN_REDIRECT_URL = "/me/profile"       # o "/schema/swagger-ui/" o "/admin/"
 LOGOUT_REDIRECT_URL = "/api-auth/login/"
 
-# --- Mongo / GridFS
-MONGO_URI = env("MONGO_URI")
-MONGO_DB = env("MONGO_DB", default="hackathon")
-GRIDFS_BUCKET = env("GRIDFS_BUCKET", default="artifacts")
-MAX_FILE_MB = env.int("MAX_FILE_MB", default=10)
+=======
+# ── Redis + RQ (colas) ────────────────────────────────────────────────────────
+REDIS_URL = env("REDIS_URL", default="redis://127.0.0.1:6379/0")
+
+RQ_QUEUES = {
+    "default": {
+        "URL": REDIS_URL,
+        "DEFAULT_TIMEOUT": 600,  # 10 min
+    }
+}
+
+# ── Media (exports locales) ───────────────────────────────────────────────────
+MEDIA_ROOT = BASE_DIR / "media"
+MEDIA_URL = "/media/"
+DEFAULT_FILE_STORAGE = "django.core.files.storage.FileSystemStorage"
+
