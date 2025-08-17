@@ -1,8 +1,10 @@
 
+"use client";
 import Link from 'next/link';
-import Pentagon from '../components/Pentagon'; // ajusta la ruta según donde esté tu componente
-import ChatAI from "@/components/ChatAI";     // aquí parecía estar en ../../ChatAI, asegúrate que sea correcta
-import React from 'react';
+import Pentagon from '../components/Pentagon';
+import ChatAI from "@/components/ChatAI";
+import React, { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 
 export default function HomePage() {
   const skills = [
@@ -11,9 +13,7 @@ export default function HomePage() {
     { name: 'CSS', value: 90 },
     { name: 'Node', value: 60 },
     { name: 'SQL', value: 50 },
-    
   ];
-
   const completedTasks = [
     'Test de Habilidades Técnicas',
     'Proyecto de Automatización 1',
@@ -22,31 +22,49 @@ export default function HomePage() {
     'Proyecto de UI/UX',
   ];
 
+  const [user, setUser] = useState<{ name: string; email: string } | null>(null);
+  const router = useRouter();
+
+  useEffect(() => {
+    const currentUser = localStorage.getItem('currentUser');
+    if (currentUser) {
+      setUser(JSON.parse(currentUser));
+    } else {
+      router.push('/login');
+    }
+  }, [router]);
+
+  const handleLogout = () => {
+    localStorage.removeItem('currentUser');
+    router.push('/login');
+  };
+
   return (
     <div className="dashboard-container">
       <header className="dashboard-header">
         <h1 className="dashboard-title">Dashboard del Futuro</h1>
         <p className="dashboard-subtitle">Un nuevo camino para tu desarrollo.</p>
+        {user && (
+          <div style={{ marginTop: '1rem', fontWeight: 'bold', fontSize: '1.2rem' }}>
+            Bienvenido, {user.name} &mdash; Rol: Estudiante
+            <button onClick={handleLogout} style={{ marginLeft: '1rem', padding: '0.3rem 0.8rem', borderRadius: '6px', background: '#e53e3e', color: 'white', border: 'none', cursor: 'pointer' }}>
+              Cerrar sesión
+            </button>
+          </div>
+        )}
       </header>
 
       <div className="grid-layout">
-
-        {/* 1. Resumen de Progreso */}
+        {/* ...existing code... */}
         <section className="card full-width">
           <h2 className="card-title">Resumen de tu Progreso</h2>
           <div className="card-content">
             <p>Aquí verás tus tests completados, proyectos y rachas de aprendizaje.</p>
-
-            {/* Dividido en dos columnas */}
             <div className="radar-chart-columns" style={{ display: 'flex', gap: '2rem', marginTop: '1rem' }}>
-              
-              {/* Columna izquierda: Pentágono */}
               <div style={{ flex: 1, textAlign: 'center' }}>
                 <h3>Mis Habilidades</h3>
-                <Pentagon skills={skills} size={200} />
+                <Pentagon />
               </div>
-
-              {/* Columna derecha: Slider vertical */}
               <div style={{ flex: 1 }}>
                 <h3>Tests Completados</h3>
                 <div
@@ -76,9 +94,7 @@ export default function HomePage() {
                   ))}
                 </div>
               </div>
-
             </div>
-
             <div className="suggestions" style={{ marginTop: '1rem' }}>
               Próximos pasos sugeridos:
               <ul>
@@ -88,8 +104,7 @@ export default function HomePage() {
             </div>
           </div>
         </section>
-
-        {/* 2. Mi Perfil Vocacional */}
+        {/* ...existing code... */}
         <section className="card">
           <h2 className="card-title">Mi Perfil Vocacional</h2>
           <div className="card-content">
@@ -99,8 +114,6 @@ export default function HomePage() {
             </Link>
           </div>
         </section>
-
-        {/* 3. Mis Competencias */}
         <section className="card">
           <h2 className="card-title">Mis Competencias</h2>
           <div className="card-content">
@@ -110,8 +123,6 @@ export default function HomePage() {
             </Link>
           </div>
         </section>
-
-        {/* 4. Comunidad y Motivación */}
         <section className="card">
           <h2 className="card-title">Comunidad</h2>
           <div className="card-content">
@@ -121,8 +132,6 @@ export default function HomePage() {
             </Link>
           </div>
         </section>
-
-        {/* 5. Recursos y Herramientas */}
         <section className="card">
           <h2 className="card-title">Recursos y Herramientas</h2>
           <div className="card-content">
@@ -141,14 +150,14 @@ export default function HomePage() {
             >
               Ir a Quizzes
             </Link>
-<div style={{ maxWidth: '500px', margin: '2rem auto' }}>
-      <h2>Chat con IA</h2>
-      <ChatAI />
-    </div>
+            <div style={{ maxWidth: '500px', margin: '2rem auto' }}>
+              <h2>Chat con IA</h2>
+              <ChatAI />
+            </div>
           </div>
         </section>
-
       </div>
     </div>
   );
 }
+
