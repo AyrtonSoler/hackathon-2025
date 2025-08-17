@@ -8,7 +8,7 @@ export default function SignupPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const [isAgreed, setIsAgreed] = useState(false); // Nuevo estado para el checkbox
+  const [isAgreed, setIsAgreed] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const router = useRouter();
@@ -18,19 +18,16 @@ export default function SignupPage() {
     setError('');
     setSuccess('');
 
-    // Validación de campos
     if (!name || !email || !password) {
       setError('Completa todos los campos.');
       return;
     }
     
-    // Nueva validación del checkbox
     if (!isAgreed) {
       setError('Debes aceptar los términos de privacidad para continuar.');
       return;
     }
 
-    // Leer usuarios guardados
     const users = JSON.parse(localStorage.getItem('users') || '{}');
     if (users[email]) {
       setError('Ya existe una cuenta con ese correo.');
@@ -52,7 +49,6 @@ export default function SignupPage() {
         <h1 className="signup-title">Crear Cuenta</h1>
         <p className="signup-subtitle">Únete a nuestra comunidad hoy mismo.</p>
 
-        {/* Campo de Nombre */}
         <div className="form-group">
           <label htmlFor="name">Nombre</label>
           <input
@@ -65,7 +61,6 @@ export default function SignupPage() {
           />
         </div>
 
-        {/* Campo de Email */}
         <div className="form-group">
           <label htmlFor="email">Correo Electrónico</label>
           <input
@@ -78,7 +73,6 @@ export default function SignupPage() {
           />
         </div>
 
-        {/* Campo de Contraseña */}
         <div className="form-group">
           <label htmlFor="password">Contraseña</label>
           <div style={{ display: 'flex', alignItems: 'center' }}>
@@ -101,7 +95,7 @@ export default function SignupPage() {
           </div>
         </div>
 
-        {/* Nuevo Checkbox para Términos de Privacidad */}
+        {/* Checkbox con enlace al documento */}
         <div className="form-group" style={{ flexDirection: 'row', alignItems: 'center' }}>
           <input
             type="checkbox"
@@ -110,14 +104,14 @@ export default function SignupPage() {
             onChange={(e) => setIsAgreed(e.target.checked)}
             style={{ marginRight: '8px' }}
           />
-          <label htmlFor="privacy-terms" style={{ margin: 0, fontSize: '0.9em' }}>Acepto los términos de privacidad</label>
+          <label htmlFor="privacy-terms" style={{ margin: 0, fontSize: '0.9em' }}>
+            Acepto los <a href="/docs/priv.pdf" target="_blank" rel="noopener noreferrer" style={{ color: '#0070f3', textDecoration: 'underline' }}>términos de privacidad</a>
+          </label>
         </div>
         
-        {/* Mensajes de error y éxito */}
         {error && <div style={{ color: 'red', marginBottom: '8px' }}>{error}</div>}
         {success && <div style={{ color: 'green', marginBottom: '8px' }}>{success}</div>}
         
-        {/* Botón de envío */}
         <button type="submit" className="signup-button">
           Registrarse
         </button>
