@@ -43,7 +43,7 @@ export default function HomePage() {
               {/* Columna izquierda: Pentágono */}
               <div style={{ flex: 1, textAlign: 'center' }}>
                 <h3>Mis Habilidades</h3>
-                <Pentagon skills={skills} size={200} />
+                <Pentagon />
               </div>
 
               {/* Columna derecha: Slider vertical */}
