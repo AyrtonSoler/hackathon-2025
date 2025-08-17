@@ -195,7 +195,6 @@ return (
           initial={{ opacity: 0.2 }}
           animate={{ opacity: [0.2, 0.8, 0.3] }}
           transition={{ duration: s.d, repeat: Infinity, repeatType: "mirror" }}
-          // Aquí está la corrección: fill y stroke en negro
           className="stroke-black fill-black"
         />
       ))}
@@ -329,13 +328,13 @@ const visible = useMemo(() => {
 
 // =============== RENDERIZADO =================
 return (
-<div className="w-full h-screen bg-transparent relative" ref={containerRef}>
+<div className="w-full h-screen bg-white relative" ref={containerRef}>
 
     {/* Fondo estrellado */}
     <Starfield width={size.w} height={size.h} count={260} />
 
     {/* lienzo con ejes */}
-    <svg className="absolute inset-0 w-full h-full" aria-label="Mapa de constelación">
+  <svg className="absolute inset-0 w-full h-full" aria-label="Mapa de constelación">
       {/* halo central sutil */}
       <defs>
         <radialGradient id="halo" r="70%">
@@ -351,6 +350,8 @@ return (
         </filter>
       </defs>
 
+
+      {/* Halo central sutil */}
       <circle cx={center.x} cy={center.y} r={Math.min(size.w,size.h)/2.1} fill="url(#halo)" />
 
       {/* Líneas (edges) */}
@@ -362,7 +363,8 @@ return (
           <line key={i}
             x1={pa.x} y1={pa.y} x2={pb.x} y2={pb.y}
             className={`transition-all ${active ? "stroke-black" : "stroke-black/25"}`}
-      strokeWidth={active ? 2.4 : 1}
+            stroke={active ? "black" : "#00000040"}
+            strokeWidth={active ? 2.4 : 1}
           />
         );
       })}
@@ -379,17 +381,16 @@ return (
              onPointerDown={(e)=>onPointerDown(n.id, e)}
              onDoubleClick={() => toggleKnown(n.id)}
           >
-<motion.circle
-  cx={p.x}
-  cy={p.y}
-  r={r}
-  filter="url(#glow)"
-  animate={{ opacity: isVisible ? 1 : 0.25, scale: isInPath ? [1,1.2,1] : 1 }}
-  transition={{ duration: isInPath ? 1.6 : 0.3, repeat: isInPath ? Infinity : 0 }}
-  className={`${known.has(n.id) ? "fill-black" : "fill-black"} stroke-black`}
-  strokeWidth={known.has(n.id) ? 1 : 1.5}
-/>
-
+            <motion.circle
+              cx={p.x}
+              cy={p.y}
+              r={r}
+              filter="url(#glow)"
+              animate={{ opacity: isVisible ? 1 : 0.25, scale: isInPath ? [1,1.2,1] : 1 }}
+              transition={{ duration: isInPath ? 1.6 : 0.3, repeat: isInPath ? Infinity : 0 }}
+              className={`${known.has(n.id) ? "fill-black" : "fill-black"} stroke-black`}
+              strokeWidth={known.has(n.id) ? 1 : 1.5}
+            />
 
             {labelVisible && (
               <text x={p.x + 10} y={p.y - 10} className="text-xs fill-black">
