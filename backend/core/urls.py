@@ -3,6 +3,7 @@ from django.conf.urls.static import static
 from django.urls import path, include
 from django.conf import settings
 from django.contrib import admin
+from portfolio import profile_views as portfolio_profile_views
 
 from ops_status.views import health_live, health_ready
 from drf_spectacular.views import (
@@ -24,6 +25,8 @@ urlpatterns = [
     path("schema/", SpectacularAPIView.as_view(), name="schema"),
     path("schema/swagger-ui/", SpectacularSwaggerView.as_view(url_name="schema"), name="swagger-ui"),
     path("schema/redoc/", SpectacularRedocView.as_view(url_name="schema"), name="redoc"),
+
+    path("api/profile/summary/", portfolio_profile_views.profile_summary, name="profile-summary"),
 
 
     path("api/test/", include("test_api.urls")),
