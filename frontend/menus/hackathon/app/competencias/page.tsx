@@ -21,7 +21,7 @@ export default function CompetenciasPage() {
         </section>
 
         <section className="competencias-card carreras-sugeridas">
-          <h2 className="card-title">Carreras Sugeridas</h2>
+          <h2 className="card-title">Metas profesionales sugeridas</h2>
           <ul className="carreras-list">
             <li>Ingeniería de Software</li>
             <li>Ciencia de Datos</li>

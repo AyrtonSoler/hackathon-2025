@@ -129,13 +129,13 @@ export default function ConstellationLearningMap() {
         knowledgeTests: summary?.knowledgeTests ?? [],
         psychoTests: summary?.psychoTests ?? [],
         projects: (projs || []).map((p: any) => ({ title: p.title, description: p.description ?? '' })),
-        baseCompetencies: {}, // dejamos que Gemini proponga
-        baseRadar: {},        // el radar ya lo maneja tu otro componente
+        baseCompetencies: {}, //
+        baseRadar: {},        //
       };
 
       const out = await analyzeProfile(student);
 
-      // 🔑 Toma primero suggestedCompetencies; si no, cae a scores
+      // Toma primero suggestedCompetencies; si no, cae a scores
       const suggested = out?.suggestedCompetencies ?? out?.scores ?? {};
       const nodeIds = Object.keys(suggested);
 
