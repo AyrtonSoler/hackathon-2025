@@ -1,9 +1,7 @@
-// frontend/menus/hackathon/app/api/ai/schema/route.ts
+// /frontend/menus/hackathon/app/api/ai/schema/route.ts
 import { NextResponse } from 'next/server';
-import { TEST_DB } from '../../../../lib/reference'; // <- ruta corregida
+import { REF_DB } from '../analyze-profile/reference';
 
-// evita cacheo en Next App Router
-export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
 type SchemaResponse = {
@@ -11,11 +9,35 @@ type SchemaResponse = {
   competencies: string[];
 };
 
-export async function GET() {
-  // Ejes del radar (10 vértices) y competencias para el mapa estelar
-  const radarAxes: string[] = Array.from(new Set(TEST_DB.habilidadesVocacionales)).slice(0, 10);
-  const competencies: string[] = Array.from(new Set(TEST_DB.habilidadesAcademicas));
+const AXES_10 = [
+  'Científica',
+  'Persuasiva',
+  'Artística',
+  'Mecánica',
+  'Social',
+  'Musical',
+  'Investigativa',
+  'Comunicativa',
+  'Emprendedora',
+  'Organizativa',
+];
 
-  const payload: SchemaResponse = { radarAxes, competencies };
+export async function GET() {
+  // Competencias de referencia a partir del mapeo de conocimientos + hints
+  const fromKnowledge = new Set<string>();
+  for (const v of Object.values(REF_DB.knowledgeToCompetency)) {
+    Object.keys(v.weights).forEach((k) => fromKnowledge.add(k));
+  }
+  const fromHints = new Set<string>();
+  Object.values(REF_DB.projectHints?.keywords || {}).forEach((bonus) =>
+    Object.keys(bonus).forEach((k) => fromHints.add(k)),
+  );
+
+  const competencies = Array.from(new Set([...fromKnowledge, ...fromHints]));
+
+  const payload: SchemaResponse = {
+    radarAxes: AXES_10,
+    competencies,
+  };
   return NextResponse.json(payload);
 }
