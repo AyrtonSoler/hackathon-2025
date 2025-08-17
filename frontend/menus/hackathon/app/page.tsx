@@ -35,19 +35,21 @@ export default function HomePage() {
         <section className="card full-width">
           <h2 className="card-title">Resumen de tu Progreso</h2>
           <div className="card-content">
-            <p>Aquí verás tus tests completados, proyectos y rachas de aprendizaje.</p>
+            <p>Aquí verás tus rachas de aprendizaje.</p>
 
             {/* Dividido en dos columnas */}
             <div className="radar-chart-columns" style={{ display: 'flex', gap: '2rem', marginTop: '1rem' }}>
               
               {/* Columna izquierda: Pentágono */}
-              <div style={{ flex: 1, textAlign: 'center' }}>
+              <div style={{ flex: '0 0 180px', maxWidth: 300, minWidth: 400, textAlign: 'center' }}>
                 <h3>Mis Habilidades</h3>
-                <Pentagon />
+                  <div style={{ display: 'flex', justifyContent: 'center', width: 320, maxWidth: '70%', margin: '0 auto' }}>
+                    <Pentagon />
+                  </div>
               </div>
 
               {/* Columna derecha: Slider vertical */}
-              <div style={{ flex: 1 }}>
+              <div style={{ flex: 1, marginLeft: '5rem' }}>
                 <h3>Tests Completados</h3>
                 <div
                   className="slider-container-vertical"
@@ -68,7 +70,7 @@ export default function HomePage() {
                         background: '#f0f0f0',
                         padding: '1rem',
                         borderRadius: '8px',
-                        boxShadow: '0 2px 6px rgba(0,0,0,0.1)',
+                        boxShadow: '0 2px 6px rgba(199, 232, 247, 0.1)',
                       }}
                     >
                       {task}

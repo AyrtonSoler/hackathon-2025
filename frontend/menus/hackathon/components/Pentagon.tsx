@@ -50,7 +50,7 @@ export default function Pentagon() {
   }, [axes.join('|')]);
 
   // ===== Geometría SVG =====
-  const size = 420, padding = 40;
+  const size = 340, padding = 40;
   const R = (size / 2) - padding, cx = size / 2, cy = size / 2, steps = 5;
   const valueToRadius = (v: number) => (clamp01(v) / 100) * R;
   const axisAngle = (i: number, n: number) => -Math.PI / 2 + (i * 2 * Math.PI) / n;
@@ -111,10 +111,6 @@ export default function Pentagon() {
     <div className="w-full rounded-2xl border bg-white p-4 shadow-sm">
       <div className="mb-3">
         <h3 className="text-lg font-semibold">Mapa de Habilidades (Radar)</h3>
-        <p className="text-xs text-gray-500">
-          Ejes dinámicos desde tu base (académicas/vocacionales). Se recalibra automáticamente con IA
-          {loading ? ' …calculando' : ''}.
-        </p>
       </div>
 
       <svg viewBox={`0 0 ${size} ${size}`} className="w-full">
