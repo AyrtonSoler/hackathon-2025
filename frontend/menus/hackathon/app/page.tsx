@@ -1,103 +1,152 @@
-import Image from "next/image";
 
-export default function Home() {
+import Link from 'next/link';
+import Pentagon from '../components/Pentagon'; // ajusta la ruta según donde esté tu componente
+import ChatAI from '../components/ChatAI';     // aquí parecía estar en ../../ChatAI, asegúrate que sea correcta
+import React from 'react';
+
+export default function HomePage() {
+  const skills = [
+    { name: 'React', value: 80 },
+    { name: 'TypeScript', value: 70 },
+    { name: 'CSS', value: 90 },
+    { name: 'Node', value: 60 },
+    { name: 'SQL', value: 50 },
+  ];
+
+  const completedTasks = [
+    'Test de Habilidades Técnicas',
+    'Proyecto de Automatización 1',
+    'Racha de aprendizaje: 5 días seguidos',
+    'Curso de Soft Skills Básico',
+    'Proyecto de UI/UX',
+  ];
+
   return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+    <div className="dashboard-container">
+      <header className="dashboard-header">
+        <h1 className="dashboard-title">Dashboard del Futuro</h1>
+        <p className="dashboard-subtitle">Un nuevo camino para tu desarrollo.</p>
+      </header>
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+      <div className="grid-layout">
+
+        {/* 1. Resumen de Progreso */}
+        <section className="card full-width">
+          <h2 className="card-title">Resumen de tu Progreso</h2>
+          <div className="card-content">
+            <p>Aquí verás tus tests completados, proyectos y rachas de aprendizaje.</p>
+
+            {/* Dividido en dos columnas */}
+            <div className="radar-chart-columns" style={{ display: 'flex', gap: '2rem', marginTop: '1rem' }}>
+              
+              {/* Columna izquierda: Pentágono */}
+              <div style={{ flex: 1, textAlign: 'center' }}>
+                <h3>Mis Habilidades</h3>
+                <Pentagon skills={skills} size={200} />
+              </div>
+
+              {/* Columna derecha: Slider vertical */}
+              <div style={{ flex: 1 }}>
+                <h3>Tests Completados</h3>
+                <div
+                  className="slider-container-vertical"
+                  style={{
+                    maxHeight: '300px',
+                    overflowY: 'auto',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '1rem',
+                    padding: '0.5rem 0',
+                  }}
+                >
+                  {completedTasks.map((task, index) => (
+                    <div
+                      key={index}
+                      className="competencias-card"
+                      style={{
+                        background: '#f0f0f0',
+                        padding: '1rem',
+                        borderRadius: '8px',
+                        boxShadow: '0 2px 6px rgba(0,0,0,0.1)',
+                      }}
+                    >
+                      {task}
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+            </div>
+
+            <div className="suggestions" style={{ marginTop: '1rem' }}>
+              Próximos pasos sugeridos:
+              <ul>
+                <li>Recordatorio: Completa el test de Habilidades Blandas.</li>
+                <li>Meta: Trabaja en el Proyecto de Automatización.</li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        {/* 2. Mi Perfil Vocacional */}
+        <section className="card">
+          <h2 className="card-title">Mi Perfil Vocacional</h2>
+          <div className="card-content">
+            <p>Datos personales, historial de tests y CV vocacional.</p>
+            <Link href="/profile" className="link-button">
+              Ver mi perfil
+            </Link>
+          </div>
+        </section>
+
+        {/* 3. Mis Competencias */}
+        <section className="card">
+          <h2 className="card-title">Mis Competencias</h2>
+          <div className="card-content">
+            <p>Mapa estelar de tus habilidades y carreras sugeridas por afinidad.</p>
+            <Link href="/competencias" className="link-button">
+              Explorar
+            </Link>
+          </div>
+        </section>
+
+        {/* 4. Comunidad y Motivación */}
+        <section className="card">
+          <h2 className="card-title">Comunidad</h2>
+          <div className="card-content">
+            <p>Medallas, logros, rankings y proyectos sugeridos.</p>
+            <Link href="/community" className="link-button">
+              Conectar
+            </Link>
+          </div>
+        </section>
+
+        {/* 5. Recursos y Herramientas */}
+        <section className="card">
+          <h2 className="card-title">Recursos y Herramientas</h2>
+          <div className="card-content">
+            <p>Tests, quizzes, guías y el chatbot con IA.</p>
+             <Link
+              href="/quizzes"
+              style={{
+                padding: '0.75rem 1.5rem',
+                borderRadius: '8px',
+                backgroundColor: '#0070f3',
+                color: 'white',
+                fontWeight: 'bold',
+                textDecoration: 'none',
+              }}
+            >
+              Ir a Quizzes
+            </Link>
+<div style={{ maxWidth: '500px', margin: '2rem auto' }}>
+      <h2>Chat con IA</h2>
+      <ChatAI />
+    </div>
+          </div>
+        </section>
+
+      </div>
     </div>
   );
 }
