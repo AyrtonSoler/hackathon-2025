@@ -3,7 +3,7 @@ from pathlib import Path
 import os
 import secrets
 import environ
-
+from dotenv import load_dotenv; load_dotenv()
 # ── Paths y .env ────────────────────────────────────────────────────────────────
 BASE_DIR = Path(__file__).resolve().parent.parent
 env = environ.Env()
@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     # Propias
     "ops_status",
     "userprefs",# ← tu app de health
+    "filesvc",
 ]
 
 MIDDLEWARE = [
@@ -173,6 +174,7 @@ LOGIN_URL = "/api-auth/login/"
 LOGIN_REDIRECT_URL = "/me/profile"       # o "/schema/swagger-ui/" o "/admin/"
 LOGOUT_REDIRECT_URL = "/api-auth/login/"
 
+=======
 # ── Redis + RQ (colas) ────────────────────────────────────────────────────────
 REDIS_URL = env("REDIS_URL", default="redis://127.0.0.1:6379/0")
 
@@ -186,3 +188,5 @@ RQ_QUEUES = {
 # ── Media (exports locales) ───────────────────────────────────────────────────
 MEDIA_ROOT = BASE_DIR / "media"
 MEDIA_URL = "/media/"
+DEFAULT_FILE_STORAGE = "django.core.files.storage.FileSystemStorage"
+
