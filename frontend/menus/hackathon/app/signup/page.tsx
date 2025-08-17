@@ -1,8 +1,6 @@
 'use client';
 
 import { useState, FormEvent } from 'react';
-
-
 import { useRouter } from 'next/navigation';
 
 export default function SignupPage() {
@@ -10,6 +8,7 @@ export default function SignupPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [isAgreed, setIsAgreed] = useState(false); // Nuevo estado para el checkbox
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const router = useRouter();
@@ -18,18 +17,29 @@ export default function SignupPage() {
     event.preventDefault();
     setError('');
     setSuccess('');
+
+    // Validación de campos
     if (!name || !email || !password) {
       setError('Completa todos los campos.');
       return;
     }
+    
+    // Nueva validación del checkbox
+    if (!isAgreed) {
+      setError('Debes aceptar los términos de privacidad para continuar.');
+      return;
+    }
+
     // Leer usuarios guardados
     const users = JSON.parse(localStorage.getItem('users') || '{}');
     if (users[email]) {
       setError('Ya existe una cuenta con ese correo.');
       return;
     }
+    
     users[email] = { name, password };
     localStorage.setItem('users', JSON.stringify(users));
+
     setSuccess('Cuenta creada exitosamente. Redirigiendo...');
     setTimeout(() => {
       router.push('/login');
@@ -41,6 +51,8 @@ export default function SignupPage() {
       <form onSubmit={handleSubmit} className="signup-form">
         <h1 className="signup-title">Crear Cuenta</h1>
         <p className="signup-subtitle">Únete a nuestra comunidad hoy mismo.</p>
+
+        {/* Campo de Nombre */}
         <div className="form-group">
           <label htmlFor="name">Nombre</label>
           <input
@@ -52,6 +64,8 @@ export default function SignupPage() {
             className="form-input"
           />
         </div>
+
+        {/* Campo de Email */}
         <div className="form-group">
           <label htmlFor="email">Correo Electrónico</label>
           <input
@@ -63,6 +77,8 @@ export default function SignupPage() {
             className="form-input"
           />
         </div>
+
+        {/* Campo de Contraseña */}
         <div className="form-group">
           <label htmlFor="password">Contraseña</label>
           <div style={{ display: 'flex', alignItems: 'center' }}>
@@ -84,8 +100,24 @@ export default function SignupPage() {
             </button>
           </div>
         </div>
+
+        {/* Nuevo Checkbox para Términos de Privacidad */}
+        <div className="form-group" style={{ flexDirection: 'row', alignItems: 'center' }}>
+          <input
+            type="checkbox"
+            id="privacy-terms"
+            checked={isAgreed}
+            onChange={(e) => setIsAgreed(e.target.checked)}
+            style={{ marginRight: '8px' }}
+          />
+          <label htmlFor="privacy-terms" style={{ margin: 0, fontSize: '0.9em' }}>Acepto los términos de privacidad</label>
+        </div>
+        
+        {/* Mensajes de error y éxito */}
         {error && <div style={{ color: 'red', marginBottom: '8px' }}>{error}</div>}
         {success && <div style={{ color: 'green', marginBottom: '8px' }}>{success}</div>}
+        
+        {/* Botón de envío */}
         <button type="submit" className="signup-button">
           Registrarse
         </button>
