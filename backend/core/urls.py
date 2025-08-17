@@ -1,11 +1,9 @@
 # core/urls.py
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include   # ← añade include
 
-# Vistas de health (cámbialo si tu app se llama distinto)
 from ops_status.views import health_live, health_ready
 
-# OpenAPI / Swagger (drf-spectacular)
 from drf_spectacular.views import (
     SpectacularAPIView,
     SpectacularSwaggerView,
@@ -15,6 +13,7 @@ from drf_spectacular.views import (
 urlpatterns = [
     # Admin
     path("admin/", admin.site.urls),
+    path("api-auth/", include("rest_framework.urls")),
 
     # Health checks
     path("health/live", health_live, name="health-live"),
@@ -22,14 +21,9 @@ urlpatterns = [
 
     # OpenAPI schema y UIs
     path("schema/", SpectacularAPIView.as_view(), name="schema"),
-    path(
-        "schema/swagger-ui/",
-        SpectacularSwaggerView.as_view(url_name="schema"),
-        name="swagger-ui",
-    ),
-    path(
-        "schema/redoc/",
-        SpectacularRedocView.as_view(url_name="schema"),
-        name="redoc",
-    ),
+    path("schema/swagger-ui/", SpectacularSwaggerView.as_view(url_name="schema"), name="swagger-ui"),
+    path("schema/redoc/", SpectacularRedocView.as_view(url_name="schema"), name="redoc"),
+
+    # Bloque 3: perfil y preferencias
+    path("", include("userprefs.urls")),   # ← agrega esta línea
 ]
