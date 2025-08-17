@@ -1,23 +1,35 @@
 'use client';
 
 import { useState, FormEvent } from 'react';
-import Link from 'next/link';
 
-export default function LoginPage() {
+export default function SignupPage() {
+  const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
   const handleSubmit = (event: FormEvent) => {
     event.preventDefault();
+    console.log('Nombre:', name);
     console.log('Correo:', email);
     console.log('Contraseña:', password);
   };
 
   return (
-    <div className="login-container">
-      <form onSubmit={handleSubmit} className="login-form">
-        <h1 className="login-title">Iniciar Sesión</h1>
-        <p className="login-subtitle">Introduce tus datos para acceder.</p>
+    <div className="signup-container">
+      <form onSubmit={handleSubmit} className="signup-form">
+        <h1 className="signup-title">Crear Cuenta</h1>
+        <p className="signup-subtitle">Únete a nuestra comunidad hoy mismo.</p>
+        <div className="form-group">
+          <label htmlFor="name">Nombre</label>
+          <input
+            type="text"
+            id="name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            required
+            className="form-input"
+          />
+        </div>
         <div className="form-group">
           <label htmlFor="email">Correo Electrónico</label>
           <input
@@ -40,16 +52,9 @@ export default function LoginPage() {
             className="form-input"
           />
         </div>
-        <button type="submit" className="login-button">
-          Entrar
+        <button type="submit" className="signup-button">
+          Registrarse
         </button>
-        {/* 👈 El enlace de "Crear cuenta" ahora está dentro del formulario */}
-        <div className="login-link-container">
-          ¿No tienes una cuenta?{' '}
-          <Link href="/signup" className="signup-link">
-            Crea una.
-          </Link>
-        </div>
       </form>
     </div>
   );

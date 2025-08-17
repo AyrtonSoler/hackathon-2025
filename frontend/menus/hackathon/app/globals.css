@@ -1,26 +1,252 @@
-@import "tailwindcss";
-
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/* Limpieza inicial y estilos base */
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
+html,
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  max-width: 100vw;
+  overflow-x: hidden;
+  background-color: #f0f2f5; /* Color de fondo general */
+  color: #333; /* Color de texto general */
+  font-family: Arial, sans-serif; /* Puedes ajustar la fuente aquí */
+}
+
+/* Estilos para las páginas */
+.home-container,
+.login-container,
+.signup-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding: 2rem;
+}
+
+/* Contenedores de contenido y formularios */
+.home-content,
+.login-form,
+.signup-form {
+  text-align: center;
+  max-width: 600px;
+  width: 100%;
+  padding: 2.5rem;
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+.login-form,
+.signup-form {
+  max-width: 400px;
+}
+
+/* Títulos y subtítulos */
+.home-title,
+.login-title,
+.signup-title {
+  font-size: 3.5rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  color: #1a202c;
+}
+
+.login-title,
+.signup-title {
+  font-size: 2.5rem;
+}
+
+.home-subtitle,
+.login-subtitle,
+.signup-subtitle {
+  font-size: 1.5rem;
+  font-weight: 400;
+  margin-bottom: 2rem;
+  color: #718096;
+}
+
+.login-subtitle,
+.signup-subtitle {
+  font-size: 1rem;
+}
+
+/* Grupos de formulario */
+.form-group {
+  margin-bottom: 1.5rem;
+  text-align: left; /* Alinea etiquetas y campos a la izquierda */
+}
+
+.form-group label {
+  display: block;
+  font-weight: 600;
+  color: #4a5568;
+  margin-bottom: 0.5rem;
+}
+
+.form-input {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  box-sizing: border-box;
+  font-size: 1rem;
+  transition: border-color 0.2s ease;
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: #0070f3;
+  box-shadow: 0 0 0 3px rgba(0, 112, 243, 0.2);
+}
+
+/* Botones */
+.home-button,
+.login-button,
+.signup-button {
+  width: 100%;
+  padding: 1rem;
+  background-color: #0070f3;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  text-decoration: none;
+  display: inline-block; /* Para botones de Link */
+}
+
+.home-button {
+  width: auto;
+  padding: 1rem 2rem;
+  border-radius: 9999px;
+  font-size: 1.25rem;
+}
+
+.home-button:hover,
+.login-button:hover,
+.signup-button:hover {
+  background-color: #005bb5;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+}
+
+.login-link-container {
+  text-align: center;
+  margin-top: 1.5rem;
+  font-size: 1rem;
+  color: #4a5568;
+}
+
+.signup-link {
+  color: #0070f3;
+  text-decoration: none;
+  font-weight: 600;
+  transition: color 0.2s ease;
+}
+
+.signup-link:hover {
+  color: #005bb5;
+  text-decoration: underline;
+}
+/* Estilos para el Dashboard y las tarjetas */
+.dashboard-container {
+  padding: 4rem 2rem;
+  background-color: #f0f2f5;
+  color: #333;
+}
+
+.dashboard-header {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.dashboard-title {
+  font-size: 3rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  color: #1a202c;
+}
+
+.dashboard-subtitle {
+  font-size: 1.2rem;
+  color: #718096;
+}
+
+.grid-layout {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+}
+
+.card {
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+  padding: 2rem;
+  transition: transform 0.2s ease-in-out;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+}
+
+.card.full-width {
+  grid-column: 1 / -1;
+}
+
+.card-title {
+  font-size: 1.75rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  color: #1a202c;
+}
+
+.card-content {
+  font-size: 1rem;
+  color: #555;
+}
+
+.link-button {
+  display: inline-block;
+  margin-top: 1rem;
+  padding: 0.75rem 1.5rem;
+  background-color: #0070f3;
+  color: white;
+  text-decoration: none;
+  font-weight: 600;
+  border-radius: 8px;
+  transition: background-color 0.2s ease;
+}
+
+.link-button:hover {
+  background-color: #005bb5;
+}
+
+.radar-chart-placeholder,
+.chatbot-placeholder {
+  height: 250px;
+  background-color: #e2e8f0;
+  border-radius: 8px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 1.5rem;
+  color: #718096;
+  font-style: italic;
+  text-align: center;
+}
+
+.suggestions {
+  margin-top: 1.5rem;
+  text-align: left;
+}
+
+.suggestions ul {
+  list-style-type: disc;
+  padding-left: 20px;
 }
