@@ -1,26 +1,23 @@
-'use client'; // Esto es necesario para usar hooks de React en el App Router
+'use client';
 
 import { useState, FormEvent } from 'react';
+import styles from './login.module.css'; // 👈 Importas los estilos de forma local
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
   const handleSubmit = (event: FormEvent) => {
-    event.preventDefault(); // Previene que la página se recargue
-
-    // Aquí es donde enviarías los datos a tu API para autenticar al usuario
+    event.preventDefault();
     console.log('Correo:', email);
     console.log('Contraseña:', password);
-
-    // En una aplicación real, aquí redirigirías al usuario al dashboard o a la página de perfil
   };
 
   return (
-    <main className="form-container">
+    <main className={styles.formContainer}> {/* Usas la clase a través del objeto 'styles' */}
       <h1>Inicia Sesión</h1>
       <form onSubmit={handleSubmit}>
-        <div className="form-group">
+        <div className={styles.formGroup}>
           <label htmlFor="email">Correo Electrónico</label>
           <input
             type="email"
@@ -30,7 +27,7 @@ export default function LoginPage() {
             required
           />
         </div>
-        <div className="form-group">
+        <div className={styles.formGroup}>
           <label htmlFor="password">Contraseña</label>
           <input
             type="password"
@@ -40,7 +37,7 @@ export default function LoginPage() {
             required
           />
         </div>
-        <button type="submit" className="submit-button">
+        <button type="submit" className={styles.submitButton}>
           Entrar
         </button>
       </form>
