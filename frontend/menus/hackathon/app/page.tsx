@@ -23,7 +23,7 @@ export default function HomePage() {
   return (
     <div className="dashboard-container">
       <header className="dashboard-header">
-        <h1 className="dashboard-title">Dashboard del Futuro</h1>
+        <h1 className="dashboard-title">Estelaris</h1>
         <p className="dashboard-subtitle">Un nuevo camino para tu desarrollo.</p>
       </header>
       
