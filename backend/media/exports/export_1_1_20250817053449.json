@@ -1,0 +1,48 @@
+{
+  "user": {
+    "id": 1,
+    "email": "alumno@example.com",
+    "first_name": "Alex",
+    "last_name": "García"
+  },
+  "institution": {
+    "id": 1,
+    "slug": "prepa-demo",
+    "name": "prepa-demo"
+  },
+  "enrollments": [
+    {
+      "id": 1,
+      "role": "student",
+      "is_active": true,
+      "created_at": "2025-08-17T05:34:49.287Z"
+    }
+  ],
+  "device_sessions": [
+    {
+      "id": 1,
+      "is_active": true,
+      "created_at": "2025-08-17T05:34:49.288Z",
+      "ip_address": "127.0.0.1",
+      "user_agent": ""
+    },
+    {
+      "id": 2,
+      "is_active": true,
+      "created_at": "2025-08-17T05:34:49.449Z",
+      "ip_address": "127.0.0.1",
+      "user_agent": ""
+    }
+  ],
+  "consents": [
+    {
+      "id": 1,
+      "kind": "privacy",
+      "policy_version": "v1.0",
+      "granted": true,
+      "country": "MX",
+      "created_at": "2025-08-17T05:34:49.452Z"
+    }
+  ],
+  "exported_at": "2025-08-17T05:34:49.458315+00:00"
+}
