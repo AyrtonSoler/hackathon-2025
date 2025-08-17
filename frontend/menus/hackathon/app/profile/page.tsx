@@ -1,5 +1,15 @@
 import Link from 'next/link';
 import Image from 'next/image';
+import Pentagon from '../../components/Pentagon';
+
+
+  const skills = [
+    { name: 'React', value: 80 },
+    { name: 'TypeScript', value: 70 },
+    { name: 'CSS', value: 90 },
+    { name: 'Node', value: 60 },
+    { name: 'SQL', value: 50 },
+  ]
 
 export default function ProfilePage() {
   return (
@@ -49,14 +59,10 @@ export default function ProfilePage() {
 
         {/* CV Vocacional */}
         <section className="card">
-          <h2 className="card-title">CV Vocacional</h2>
+          <h2 className="card-title">Habilidades</h2>
           <div className="card-content">
-            <p><strong>Proyecto 1:</strong> Aplicación de Next.js para dashboard vocacional</p>
-            <p><strong>Evidencia:</strong> <a href="#">Ver en GitHub</a></p>
-            <p><strong>Proyecto 2:</strong> Chatbot con IA para orientación</p>
-            <p><strong>Evidencia:</strong> <a href="#">Demo en línea</a></p>
-
-            <Link href="/proyectos" className="link-button">Ir a Proyectos</Link>
+            <center><Pentagon skills={skills} size={200} /></center>
+            
           </div>
         </section>
 
