@@ -3,7 +3,7 @@ from pathlib import Path
 import os
 import secrets
 import environ
-
+from dotenv import load_dotenv; load_dotenv()
 # ── Paths y .env ────────────────────────────────────────────────────────────────
 BASE_DIR = Path(__file__).resolve().parent.parent
 env = environ.Env()
@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     # Propias
     "ops_status",
     "userprefs",# ← tu app de health
+    "filesvc",
 ]
 
 MIDDLEWARE = [
@@ -169,3 +170,9 @@ LOGGING = {
 LOGIN_URL = "/api-auth/login/"
 LOGIN_REDIRECT_URL = "/me/profile"       # o "/schema/swagger-ui/" o "/admin/"
 LOGOUT_REDIRECT_URL = "/api-auth/login/"
+
+# --- Mongo / GridFS
+MONGO_URI = env("MONGO_URI")
+MONGO_DB = env("MONGO_DB", default="hackathon")
+GRIDFS_BUCKET = env("GRIDFS_BUCKET", default="artifacts")
+MAX_FILE_MB = env.int("MAX_FILE_MB", default=10)
