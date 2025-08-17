@@ -55,6 +55,8 @@ export default function ProfilePage() {
             <p><strong>Evidencia:</strong> <a href="#">Ver en GitHub</a></p>
             <p><strong>Proyecto 2:</strong> Chatbot con IA para orientación</p>
             <p><strong>Evidencia:</strong> <a href="#">Demo en línea</a></p>
+
+            <Link href="/proyectos" className="link-button">Ir a Proyectos</Link>
           </div>
         </section>
 

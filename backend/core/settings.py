@@ -45,9 +45,12 @@ INSTALLED_APPS = [
     "userprefs",# ← tu app de health
     "filesvc",
     "test_api",
+    "corsheaders",
+    "portfolio",
 ]
 
 MIDDLEWARE = [
+    "corsheaders.middleware.CorsMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -191,3 +194,8 @@ MEDIA_ROOT = BASE_DIR / "media"
 MEDIA_URL = "/media/"
 DEFAULT_FILE_STORAGE = "django.core.files.storage.FileSystemStorage"
 
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",
+    "http://localhost:5173",
+]
+CSRF_TRUSTED_ORIGINS = ["http://localhost:3000","http://localhost:5173"]

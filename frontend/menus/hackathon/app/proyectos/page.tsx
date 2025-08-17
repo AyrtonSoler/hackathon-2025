@@ -1,6 +1,32 @@
+'use client';
 import Link from 'next/link';
+import { useEffect, useState } from 'react';
+import { createProject, getProjects } from '../../lib/portfolio';
+import type { Project } from '../../lib/portfolio';
 
 export default function ProyectosPage() {
+  const [items, setItems] = useState<Project[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [err, setErr] = useState<string | null>(null);
+
+  const [inst, setInst] = useState('');
+  const [title, setTitle] = useState('');
+  const [desc, setDesc] = useState('');
+
+  useEffect(() => {
+    getProjects()
+      .then(setItems)
+      .catch(e => setErr(String(e)))
+      .finally(() => setLoading(false));
+  }, []);
+
+  async function onCreate(e: React.FormEvent) {
+    e.preventDefault();
+    const p = await createProject({ institution: inst, title, description: desc });
+    setItems(s => [p, ...s]);
+    setInst(''); setTitle(''); setDesc('');
+  }
+
   return (
     <div className="dashboard-container">
       <header className="dashboard-header">
@@ -8,56 +34,47 @@ export default function ProyectosPage() {
         <p className="dashboard-subtitle">Explora lo que has logrado y lo que te espera.</p>
       </header>
 
-      {/* Grid de 2 columnas para Proyectos Propios y Sugeridos */}
-      <div className="grid-layout" style={{ gridTemplateColumns: '1fr 1fr', gap: '20px', marginTop: '20px' }}>
+      {/* Crear proyecto */}
+      <form onSubmit={onCreate} className="card full-width" style={{ marginTop: 16, padding: 16 }}>
+        <h2 className="card-title">Crear nuevo proyecto</h2>
+        <div className="card-content" style={{ display: 'grid', gap: 8 }}>
+          <input className="rounded border p-2" placeholder="Institución (opcional)" value={inst} onChange={e=>setInst(e.target.value)} />
+          <input className="rounded border p-2" placeholder="Título del proyecto" value={title} onChange={e=>setTitle(e.target.value)} required />
+          <textarea className="rounded border p-2" placeholder="Descripción" rows={3} value={desc} onChange={e=>setDesc(e.target.value)} />
+          <button className="link-button" style={{ alignSelf: 'start' }}>Crear</button>
+        </div>
+      </form>
 
-        {/* Sección de Proyectos Propios (Individuales) */}
+      {/* Listado */}
+      <div className="grid-layout" style={{ gridTemplateColumns: '1fr', gap: 20, marginTop: 20 }}>
         <section className="card full-width">
           <h2 className="card-title">Proyectos Creados</h2>
           <div className="card-content">
-            <div style={{ display: 'flex', gap: '20px', overflowX: 'auto', paddingBottom: '10px' }}>
-              {/* Ejemplo de un proyecto propio */}
-              <div style={{ minWidth: '180px', height: '150px', border: '1px solid #ccc', borderRadius: '8px', padding: '10px', textAlign: 'center' }}>
-                <p><strong>Proyecto 1</strong></p>
-                <p>Descripción breve del proyecto.</p>
-              </div>
-              {/* Puedes duplicar este div para más proyectos */}
-              <div style={{ minWidth: '180px', height: '150px', border: '1px solid #ccc', borderRadius: '8px', padding: '10px', textAlign: 'center' }}>
-                <p><strong>Proyecto 2</strong></p>
-                <p>Descripción breve del proyecto.</p>
-              </div>
-              <div style={{ minWidth: '180px', height: '150px', border: '1px solid #ccc', borderRadius: '8px', padding: '10px', textAlign: 'center' }}>
-                <p><strong>Proyecto 3</strong></p>
-                <p>Descripción breve del proyecto.</p>
-              </div>
+            {loading && <p>Cargando…</p>}
+            {err && <p style={{ color: 'crimson' }}>Error: {err}</p>}
+            {!loading && items.length === 0 && <p>Aún no tienes proyectos.</p>}
+
+            <div style={{ display: 'flex', gap: 20, overflowX: 'auto', paddingBottom: 10 }}>
+              {items.map(p => (
+                <Link
+                  key={p.id}
+                  href={`/proyectos/${p.id}`}
+                  style={{ minWidth: 220, border: '1px solid #ccc', borderRadius: 8, padding: 10, textDecoration: 'none', color: 'inherit' }}
+                >
+                  <p><strong>{p.title}</strong></p>
+                  <p style={{ fontSize: 12, color: '#666' }}>
+                    {p.institution || '—'} · {new Date(p.created_at).toLocaleDateString()}
+                  </p>
+                  <p style={{ marginTop: 6 }}>{p.description?.slice(0, 100) || 'Sin descripción'}</p>
+                </Link>
+              ))}
             </div>
           </div>
         </section>
-
-        {/* Sección de Proyectos Sugeridos (Comunidad) */}
-        <section className="card full-width">
-          <h2 className="card-title">Proyectos Sugeridos</h2>
-          <div className="card-content">
-            <p style={{ marginBottom: '10px' }}>Basados en tus intereses y habilidades, te sugerimos:</p>
-            {/* Ejemplo de un proyecto sugerido */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                <span>⬅️</span>
-                <div style={{ minWidth: '180px', height: '150px', border: '1px solid #ccc', borderRadius: '8px', padding: '10px', textAlign: 'center' }}>
-                    <p><strong>Proyecto Sugerido 1</strong></p>
-                    <p>Aplicación de E-commerce.</p>
-                </div>
-                <span>➡️</span>
-            </div>
-            <p style={{ marginTop: '10px', textAlign: 'center' }}>¡Únete a un equipo para colaborar!</p>
-          </div>
-        </section>
-
       </div>
 
-      <div style={{ marginTop: '20px', textAlign: 'center' }}>
-        <Link href="/" className="link-button">
-          Volver al Dashboard
-        </Link>
+      <div style={{ marginTop: 20, textAlign: 'center' }}>
+        <Link href="/" className="link-button">Volver al Dashboard</Link>
       </div>
     </div>
   );
