@@ -1,19 +1,31 @@
-// frontend/menus/hackathon/app/profile/page.tsx
+
+"use client";
 import Link from 'next/link';
 import Image from 'next/image';
 import Pentagon from '../../components/Pentagon';
-"use client";
 import React, { useEffect, useState } from 'react';
 
 export default function ProfilePage() {
   const [user, setUser] = useState<{ name: string; email: string } | null>(null);
+  const [editing, setEditing] = useState(false);
+  const [hobbies, setHobbies] = useState('');
 
   useEffect(() => {
     const currentUser = localStorage.getItem('currentUser');
     if (currentUser) {
       setUser(JSON.parse(currentUser));
     }
+    const savedHobbies = localStorage.getItem('userHobbies');
+    if (savedHobbies) {
+      setHobbies(savedHobbies);
+    }
   }, []);
+
+  const handleEdit = () => setEditing(true);
+  const handleSave = () => {
+    localStorage.setItem('userHobbies', hobbies);
+    setEditing(false);
+  };
 
   return (
     <div className="dashboard-container">
@@ -30,8 +42,27 @@ export default function ProfilePage() {
             <div>
               <p><strong>Nombre:</strong> {user ? user.name : 'No disponible'}</p>
               <p><strong>Correo:</strong> {user ? user.email : 'No disponible'}</p>
-              <p><strong>Escuela:</strong> Universidad Tecnológica</p>
-              <p><strong>Carrera:</strong> Ingeniería en Software</p>
+              <p><strong>Institución:</strong> No registrada</p>
+              <p><strong>Carrera:</strong> Pendiente</p>
+            </div>
+            <div style={{ marginLeft: '40px', minWidth: '220px' }}>
+              <h3>Gustos y Hobbies</h3>
+              {editing ? (
+                <div>
+                  <textarea
+                    value={hobbies}
+                    onChange={e => setHobbies(e.target.value)}
+                    rows={4}
+                    style={{ width: '100%', borderRadius: '6px', padding: '8px' }}
+                  />
+                  <button onClick={handleSave} style={{ marginTop: '8px', background: '#0070f3', color: 'white', border: 'none', borderRadius: '6px', padding: '6px 16px', cursor: 'pointer' }}>Guardar</button>
+                </div>
+              ) : (
+                <div>
+                  <p style={{ minHeight: '48px' }}>{hobbies || 'Sin información.'}</p>
+                  <button onClick={handleEdit} style={{ background: '#3182ce', color: 'white', border: 'none', borderRadius: '6px', padding: '6px 16px', cursor: 'pointer' }}>Editar</button>
+                </div>
+              )}
             </div>
           </div>
         </div>
