@@ -1,15 +1,46 @@
+// En app/profile/page.tsx
 import Link from 'next/link';
 import Image from 'next/image';
 import Pentagon from '../../components/Pentagon';
 
+// Creación de la base de datos local para habilidades vocacionales
+const habilidadesVocacionales = [
+  { nombre: 'Científica', valor: 4 },
+  { nombre: 'Persuasiva', valor: 5 },
+  { nombre: 'Artística', valor: 3 },
+  { nombre: 'Mecánica', valor: 2 },
+  { nombre: 'Social', valor: 5 },
+  { nombre: 'Musical', valor: 1 },
+];
 
-  const skills = [
-    { name: 'React', value: 80 },
-    { name: 'TypeScript', value: 70 },
-    { name: 'CSS', value: 90 },
-    { name: 'Node', value: 60 },
-    { name: 'SQL', value: 50 },
-  ]
+// Creación de la base de datos local para habilidades académicas
+const habilidadesAcademicas = [
+  { nombre: 'Administración', valor: 3 },
+  { nombre: 'Aritmética', valor: 4 },
+  { nombre: 'Biología', valor: 5 },
+  { nombre: 'Cálculo', valor: 5 },
+  { nombre: 'Derecho', valor: 2 },
+  { nombre: 'Economía', valor: 3 },
+  { nombre: 'Estadística', valor: 4 },
+  { nombre: 'Filosofía', valor: 2 },
+  { nombre: 'Física', valor: 4 },
+  { nombre: 'Historia', valor: 5 },
+  { nombre: 'Literatura', valor: 3 },
+  { nombre: 'Matemáticas', valor: 5 },
+  { nombre: 'Premedicina', valor: 4 },
+  { nombre: 'Psicología', valor: 4 },
+  { nombre: 'Química', valor: 3 },
+  { nombre: 'Salud', valor: 5 },
+];
+
+// Tus habilidades originales
+const skills = [
+  { name: 'React', value: 80 },
+  { name: 'TypeScript', value: 70 },
+  { name: 'CSS', value: 90 },
+  { name: 'Node', value: 60 },
+  { name: 'SQL', value: 50 },
+];
 
 export default function ProfilePage() {
   return (
@@ -62,7 +93,6 @@ export default function ProfilePage() {
           <h2 className="card-title">Habilidades</h2>
           <div className="card-content">
             <center><Pentagon skills={skills} size={200} /></center>
-            
           </div>
         </section>
 
