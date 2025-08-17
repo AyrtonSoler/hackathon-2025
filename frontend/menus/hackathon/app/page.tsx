@@ -1,7 +1,7 @@
 
 import Link from 'next/link';
 import Pentagon from '../components/Pentagon'; // ajusta la ruta según donde esté tu componente
-import ChatAI from '../components/ChatAI';     // aquí parecía estar en ../../ChatAI, asegúrate que sea correcta
+import ChatAI from "@/components/ChatAI";     // aquí parecía estar en ../../ChatAI, asegúrate que sea correcta
 import React from 'react';
 
 export default function HomePage() {
