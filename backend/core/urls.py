@@ -1,6 +1,7 @@
 # core/urls.py
 from django.contrib import admin
-from django.urls import path, include   # ← añade include
+from django.urls import path, include
+
 
 from ops_status.views import health_live, health_ready
 
@@ -23,7 +24,6 @@ urlpatterns = [
     path("schema/", SpectacularAPIView.as_view(), name="schema"),
     path("schema/swagger-ui/", SpectacularSwaggerView.as_view(url_name="schema"), name="swagger-ui"),
     path("schema/redoc/", SpectacularRedocView.as_view(url_name="schema"), name="redoc"),
-
-    # Bloque 3: perfil y preferencias
     path("", include("userprefs.urls")),   # ← agrega esta línea
+    path("api/", include("accounts.urls")),
 ]
