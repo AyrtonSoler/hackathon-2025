@@ -126,7 +126,8 @@ export default function HomePage() {
         <section className="card">
           <h2 className="card-title">Recursos y Herramientas</h2>
           <div className="card-content">
-            <p>Tests, quizzes, guías y el chatbot con IA.</p>
+            <p >Tests, quizzes, guías y el chatbot con IA.</p>
+            <p>----</p>
              <Link
               href="/quizzes"
               style={{
