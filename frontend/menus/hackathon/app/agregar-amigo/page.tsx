@@ -36,7 +36,7 @@ const ProximamentePage: React.FC = () => {
       
       {/* Fondo de partículas abstractas */}
       <div className="absolute inset-0 z-0 w-full h-full opacity-70">
-        <svg className="absolute inset-0 w-full h-full">
+  <svg className="absolute inset-0 w-full h-full pointer-events-none">
           <defs>
             <radialGradient id="grad1" cx="50%" cy="50%" r="50%">
               <stop offset="0%" stopColor="rgba(12,192,238,0.3)" />
@@ -118,7 +118,7 @@ const ProximamentePage: React.FC = () => {
         whileHover="hover"
         whileTap={{ scale: 0.95 }}
         variants={buttonGlowVariants}
-        className="mb-16 font-extrabold text-white rounded-full border-2 border-purple-500 transition-all duration-300 transform shadow-2xl"
+        className="mb-16 font-extrabold text-white rounded-full border-2 border-purple-500 transition-all duration-300 transform shadow-2xl z-10 cursor-pointer"
         style={{
           background: 'linear-gradient(45deg, #4F46E5, #9333EA)',
           boxShadow: '0 0 40px rgba(139, 92, 246, 0.9)',
@@ -131,7 +131,7 @@ const ProximamentePage: React.FC = () => {
       >
         ← Regresar
       </motion.button>
-*** End Patch
+
   </div>
   );
 };
