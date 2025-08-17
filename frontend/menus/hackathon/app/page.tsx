@@ -5,11 +5,11 @@ import React from 'react';
 
 export default function HomePage() {
   const skills = [
-    { name: 'React', value: 80 },
-    { name: 'TypeScript', value: 70 },
-    { name: 'CSS', value: 90 },
-    { name: 'Node', value: 60 },
-    { name: 'SQL', value: 50 },
+    { name: 'React', value: 30 },
+    { name: 'TypeScript', value: 100 },
+    { name: 'CSS', value: 50 },
+    { name: 'Node', value: 30 },
+    { name: 'SQL', value: 20 },
   ];
 
   const completedTasks = [
