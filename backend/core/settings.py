@@ -32,8 +32,11 @@ INSTALLED_APPS = [
 
     # Terceros
     "rest_framework",
+    "rest_framework_simplejwt",
+    "rest_framework_simplejwt.token_blacklist",
     "drf_spectacular",
     "storages",
+    "accounts",
 
     # Propias
     "ops_status",  # ← tu app de health
@@ -96,6 +99,45 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 REST_FRAMEWORK = {
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
 }
+
+# --- DRF: auth JWT + throttling por scope 'auth' (sin pisar config existente)
+from datetime import timedelta
+
+REST_FRAMEWORK = globals().get("REST_FRAMEWORK", {})
+
+# Auth por JWT
+REST_FRAMEWORK.setdefault(
+    "DEFAULT_AUTHENTICATION_CLASSES",
+    ("rest_framework_simplejwt.authentication.JWTAuthentication",)
+)
+
+# Throttling global (incluye Scoped para usar 'auth')
+REST_FRAMEWORK.setdefault(
+    "DEFAULT_THROTTLE_CLASSES",
+    (
+        "rest_framework.throttling.AnonRateThrottle",
+        "rest_framework.throttling.UserRateThrottle",
+        "rest_framework.throttling.ScopedRateThrottle",
+    )
+)
+
+# Tasas por scope; rellenamos si faltan
+REST_FRAMEWORK.setdefault("DEFAULT_THROTTLE_RATES", {})
+REST_FRAMEWORK["DEFAULT_THROTTLE_RATES"].setdefault("anon", "50/min")
+REST_FRAMEWORK["DEFAULT_THROTTLE_RATES"].setdefault("user", "100/min")
+REST_FRAMEWORK["DEFAULT_THROTTLE_RATES"].setdefault("auth", "5/min")  # <- la clave del error
+
+# SimpleJWT (por si aún no lo tenías)
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=15),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=7),
+    "ROTATE_REFRESH_TOKENS": True,
+    "BLACKLIST_AFTER_ROTATION": True,
+    "ALGORITHM": "HS256",
+    "SIGNING_KEY": env("JWT_SECRET"),
+    "AUTH_HEADER_TYPES": ("Bearer",),
+}
+
 SPECTACULAR_SETTINGS = {
     "TITLE": "API",
     "VERSION": "v1",

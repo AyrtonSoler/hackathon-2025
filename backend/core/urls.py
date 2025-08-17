@@ -1,6 +1,6 @@
 # core/urls.py
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
 
 # Vistas de health (cámbialo si tu app se llama distinto)
 from ops_status.views import health_live, health_ready
@@ -32,4 +32,5 @@ urlpatterns = [
         SpectacularRedocView.as_view(url_name="schema"),
         name="redoc",
     ),
+    path("api/", include("accounts.urls")),
 ]
