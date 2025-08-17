@@ -25,6 +25,8 @@ urlpatterns = [
     path("schema/swagger-ui/", SpectacularSwaggerView.as_view(url_name="schema"), name="swagger-ui"),
     path("schema/redoc/", SpectacularRedocView.as_view(url_name="schema"), name="redoc"),
 
+
+    path("api/test/", include("test_api.urls")),
     # path("", include("userprefs.urls")),   # ← agrega esta línea
     path("api/", include("accounts.urls")),
     path("", include("privacy.urls")),

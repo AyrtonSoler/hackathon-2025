@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     "ops_status",
     "userprefs",# ← tu app de health
     "filesvc",
+    "test_api",
 ]
 
 MIDDLEWARE = [
@@ -174,14 +175,14 @@ LOGIN_URL = "/api-auth/login/"
 LOGIN_REDIRECT_URL = "/me/profile"       # o "/schema/swagger-ui/" o "/admin/"
 LOGOUT_REDIRECT_URL = "/api-auth/login/"
 
-=======
 # ── Redis + RQ (colas) ────────────────────────────────────────────────────────
 REDIS_URL = env("REDIS_URL", default="redis://127.0.0.1:6379/0")
 
+import os
 RQ_QUEUES = {
     "default": {
-        "URL": REDIS_URL,
-        "DEFAULT_TIMEOUT": 600,  # 10 min
+        "URL": os.environ.get("REDIS_URL", "redis://127.0.0.1:6379/0"),
+        "DEFAULT_TIMEOUT": 360,
     }
 }
 
