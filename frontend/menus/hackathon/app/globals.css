@@ -328,7 +328,13 @@ body {
 }
 
 .mapa-placeholder {
+  position: relative;
   width: 100%;
-  height: 600px; /* o h-96 si usas Tailwind */
-  position: relative; /* necesario para los elementos absolutos dentro */
+  height: 500px; /* o la altura que necesites */
 }
+.competencias-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr; /* dos columnas */
+  gap: 1.5rem;
+}
+

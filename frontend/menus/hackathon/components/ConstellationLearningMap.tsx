@@ -171,15 +171,18 @@ interface StarfieldProps {
 }
 
 function Starfield({ width, height, count = 200 }: StarfieldProps) {
-  const stars = useMemo(() => (
-    new Array(count).fill(0).map((_,i) => ({
+  const [stars, setStars] = useState<{id:number,x:number,y:number,r:number,d:number}[]>([]);
+
+  useEffect(() => {
+    const s = new Array(count).fill(0).map((_,i) => ({
       id: i,
       x: Math.random()*width,
       y: Math.random()*height,
       r: Math.random()*1.2 + 0.3,
       d: 2 + Math.random()*4,
-    }))
-  ), [width, height, count]);
+    }));
+    setStars(s);
+  }, [width, height, count]);
 
   return (
     <svg className="absolute inset-0 w-full h-full" aria-hidden>
@@ -198,6 +201,7 @@ function Starfield({ width, height, count = 200 }: StarfieldProps) {
     </svg>
   );
 }
+
 
 // =============== COMPONENTE PRINCIPAL ==============
 export default function ConstellationLearningMap() {
@@ -263,17 +267,18 @@ export default function ConstellationLearningMap() {
       el.removeEventListener("pointerleave", onPointerUp);
     };
   });
-
-  const visible = useMemo(() => {
-    const q = filter.trim().toLowerCase();
-    if (!q) return new Set<string>(graph.nodes.map(n => n.id));
-    const set = new Set<string>();
-    for (const n of graph.nodes) {
-      const hay = (n.id.toLowerCase().includes(q) || (n.tags || []).some(t => t.toLowerCase().includes(q)));
-      if (hay) set.add(n.id);
-    }
-    return set;
-  }, [graph, filter]);
+const visible = useMemo(() => {
+  const nodes = graph.nodes || [];
+  const q = filter.trim().toLowerCase();
+  if (!q) return new Set<string>(nodes.map(n => n.id));
+  
+  const set = new Set<string>();
+  for (const n of nodes) {
+    const hay = (n.id.toLowerCase().includes(q) || (n.tags || []).some(t => t.toLowerCase().includes(q)));
+    if (hay) set.add(n.id);
+  }
+  return set;
+}, [graph, filter]);
 
   const toggleKnown = (id: string) => {
     setKnown(prev => {

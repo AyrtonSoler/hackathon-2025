@@ -13,12 +13,14 @@ export default function CompetenciasPage() {
 
       <div className="competencias-grid">
         {/* Sección para el mapa estelar/grafo */}
-        <section className="competencias-card competencias-mapa">
+<section className="competencias-card competencias-mapa">
   <h2 className="card-title">Mapa Estelar de Competencias</h2>
-  <div className="mapa-placeholder">
-    <ConstellationLearningMap />
-  </div>
+<div className="mapa-placeholder w-full min-h-screen relative overflow-hidden">
+  <ConstellationLearningMap />
+</div>
 </section>
+
+
 
 
         {/* Sección para las carreras sugeridas */}
