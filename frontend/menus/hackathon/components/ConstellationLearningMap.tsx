@@ -184,7 +184,7 @@ function Starfield({ width, height, count = 200 }: StarfieldProps) {
     setStars(s);
   }, [width, height, count]);
 
-  return (
+return (
     <svg className="absolute inset-0 w-full h-full" aria-hidden>
       {stars.map(s => (
         <motion.circle
@@ -195,7 +195,8 @@ function Starfield({ width, height, count = 200 }: StarfieldProps) {
           initial={{ opacity: 0.2 }}
           animate={{ opacity: [0.2, 0.8, 0.3] }}
           transition={{ duration: s.d, repeat: Infinity, repeatType: "mirror" }}
-          className="fill-white"
+          // Aquí está la corrección: fill y stroke en negro
+          className="stroke-black fill-black"
         />
       ))}
     </svg>
@@ -328,7 +329,7 @@ const visible = useMemo(() => {
 
 // =============== RENDERIZADO =================
 return (
-<div className="w-full h-screen bg-black relative" ref={containerRef}>
+<div className="w-full h-screen bg-transparent relative" ref={containerRef}>
 
     {/* Fondo estrellado */}
     <Starfield width={size.w} height={size.h} count={260} />
@@ -360,8 +361,8 @@ return (
         return (
           <line key={i}
             x1={pa.x} y1={pa.y} x2={pb.x} y2={pb.y}
-            className={`transition-all ${active ? "stroke-white" : "stroke-white/25"}`}
-            strokeWidth={active ? 2.4 : 1}
+            className={`transition-all ${active ? "stroke-black" : "stroke-black/25"}`}
+      strokeWidth={active ? 2.4 : 1}
           />
         );
       })}
@@ -378,24 +379,26 @@ return (
              onPointerDown={(e)=>onPointerDown(n.id, e)}
              onDoubleClick={() => toggleKnown(n.id)}
           >
-            <motion.circle
-              cx={p.x}
-              cy={p.y}
-              r={r}
-              filter="url(#glow)"
-              animate={{ opacity: isVisible ? 1 : 0.25, scale: isInPath ? [1,1.2,1] : 1 }}
-              transition={{ duration: isInPath ? 1.6 : 0.3, repeat: isInPath ? Infinity : 0 }}
-              className={`${known.has(n.id) ? "fill-white" : "fill-transparent"} stroke-white`}
-              strokeWidth={known.has(n.id) ? 1 : 1.5}
-            />
+<motion.circle
+  cx={p.x}
+  cy={p.y}
+  r={r}
+  filter="url(#glow)"
+  animate={{ opacity: isVisible ? 1 : 0.25, scale: isInPath ? [1,1.2,1] : 1 }}
+  transition={{ duration: isInPath ? 1.6 : 0.3, repeat: isInPath ? Infinity : 0 }}
+  className={`${known.has(n.id) ? "fill-black" : "fill-black"} stroke-black`}
+  strokeWidth={known.has(n.id) ? 1 : 1.5}
+/>
+
+
             {labelVisible && (
-              <text x={p.x + 10} y={p.y - 10} className="text-xs fill-white">
+              <text x={p.x + 10} y={p.y - 10} className="text-xs fill-black">
                 {n.id}
               </text>
             )}
             {/* Marcador de conocido */}
             {known.has(n.id) && (
-              <circle cx={p.x} cy={p.y} r={r+3} className="fill-white/10" />
+              <circle cx={p.x} cy={p.y} r={r+3} className="fill-black/10" />
             )}
           </g>
         );

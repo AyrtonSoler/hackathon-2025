@@ -15,8 +15,8 @@ export default function CompetenciasPage() {
         <section className="competencias-card competencias-mapa">
           <h2 className="card-title">Mapa Estelar de Competencias</h2>
           {/* Aquí está la corrección: dale un ancho y una altura fijos */}
-<div className="mapa-placeholder w-[1200px] h-[700px] relative overflow-hidden flex items-center justify-center">
-  <ConstellationLearningMap />
+<div className="mapa-placeholder w-[1200px] h-[700px] relative overflow-hidden flex items-center justify-center bg-white">
+    <ConstellationLearningMap />
 </div>
         </section>
 
