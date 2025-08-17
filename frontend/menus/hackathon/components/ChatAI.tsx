@@ -1,112 +1,108 @@
 'use client';
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
-type Message = {
-  role: 'user' | 'ai';
-  content: string;
-};
+type Message = { role: 'user' | 'ai'; content: string };
 
-const ChatAI: React.FC = () => {
-  const [messages, setMessages] = useState<Message[]>([]);
+const MAX_HISTORY = 8;
+
+export default function ChatAI() {
+  // Estado TIPADO desde el inicio
+  const [messages, setMessages] = useState<Message[]>([
+    { role: 'ai', content: '¡Hola! Soy tu asistente. ¿En qué te ayudo hoy?' } as const,
+  ]);
   const [input, setInput] = useState('');
-  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const [loading, setLoading] = useState(false);
+  const endRef = useRef<HTMLDivElement | null>(null);
 
-  // Scroll automático
+  // Auto-scroll
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [messages]);
+    endRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [messages, loading]);
 
-  const sendMessage = async () => {
-    if (!input.trim()) return;
+  async function sendMessage() {
+    const text = input.trim();
+    if (!text || loading) return;
 
-    const userMessage: Message = { role: 'user', content: input };
-    setMessages(prev => [...prev, userMessage]);
+    // Fuerza tipos literales y tipa el array resultante
+    const nextHistory: Message[] = [
+      ...messages,
+      { role: 'user' as const, content: text },
+    ];
+
+    setMessages(nextHistory);
     setInput('');
+    setLoading(true);
 
     try {
-      // Llamada a tu API
-      const res = await fetch('/api/chat', {
+      const res = await fetch('/api/ai/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: input }),
+        body: JSON.stringify({
+          message: text,
+          history: nextHistory.slice(-MAX_HISTORY),
+        }),
       });
 
       const data = await res.json();
-      const aiMessage: Message = { role: 'ai', content: data.reply };
-      setMessages(prev => [...prev, aiMessage]);
-    } catch (error) {
-      const errorMessage: Message = { role: 'ai', content: 'Error al comunicarse con la IA.' };
-      setMessages(prev => [...prev, errorMessage]);
-    }
-  };
+      if (!res.ok) throw new Error(data?.error || 'Error del modelo');
 
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter') sendMessage();
-  };
+      const reply = (data.reply as string) ?? 'No recibí respuesta.';
+      setMessages((m) => [...m, { role: 'ai', content: reply } as const]);
+    } catch (err) {
+      setMessages((m) => [
+        ...m,
+        { role: 'ai', content: 'Error al comunicarse con la IA. Intenta de nuevo.' } as const,
+      ]);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  function onKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      void sendMessage();
+    }
+  }
 
   return (
-    <div
-      className="chat-container"
-      style={{
-        display: 'flex',
-        flexDirection: 'column',
-        height: '250px',
-        width: '100%',
-        border: '1px solid #ccc',
-        borderRadius: '8px',
-        padding: '1rem',
-      }}
-    >
+    <div className="flex w-full flex-col rounded-2xl border p-3">
       {/* Mensajes */}
-      <div
-        className="chat-messages"
-        style={{ flex: 1, overflowY: 'auto', marginBottom: '1rem', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}
-      >
-        {messages.map((msg, i) => (
-          <div
-            key={i}
-            style={{
-              alignSelf: msg.role === 'user' ? 'flex-end' : 'flex-start',
-              background: msg.role === 'user' ? '#0070f3' : '#f0f0f0',
-              color: msg.role === 'user' ? 'white' : 'black',
-              padding: '0.5rem 1rem',
-              borderRadius: '20px',
-              maxWidth: '70%',
-              wordWrap: 'break-word',
-            }}
-          >
-            {msg.content}
+      <div className="mb-3 flex-1 space-y-2 overflow-y-auto pr-1" style={{ minHeight: 160, maxHeight: 320 }}>
+        {messages.map((m, i) => (
+          <div key={i} className={`text-sm ${m.role === 'user' ? 'text-right' : ''}`}>
+            <span
+              className={`inline-block max-w-[75%] whitespace-pre-wrap break-words rounded-2xl px-3 py-2 ${
+                m.role === 'user' ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-900'
+              }`}
+            >
+              {m.content}
+            </span>
           </div>
         ))}
-        <div ref={messagesEndRef} />
+        {loading && <div className="text-sm italic text-gray-500">Pensando…</div>}
+        <div ref={endRef} />
       </div>
 
       {/* Input */}
-      <div className="chat-input" style={{ display: 'flex', gap: '0.5rem' }}>
+      <div className="flex items-center gap-2">
         <input
           type="text"
+          className="flex-1 rounded-xl border px-3 py-2 focus:outline-none focus:ring"
+          placeholder="Escribe un mensaje… (Enter para enviar)"
           value={input}
-          onChange={e => setInput(e.target.value)}
-          onKeyDown={handleKeyDown}
-          placeholder="Escribe un mensaje..."
-          style={{ flex: 1, padding: '0.5rem 1rem', borderRadius: '20px', border: '1px solid #ccc' }}
+          onChange={(e) => setInput(e.target.value)}
+          onKeyDown={onKeyDown}
+          disabled={loading}
         />
         <button
           onClick={sendMessage}
-          style={{
-            padding: '0.5rem 1rem',
-            borderRadius: '20px',
-            border: 'none',
-            background: '#0070f3',
-            color: 'white',
-            cursor: 'pointer',
-          }}
+          disabled={loading || !input.trim()}
+          className="h-10 rounded-xl bg-blue-600 px-4 text-white disabled:opacity-60"
         >
           Enviar
         </button>
       </div>
     </div>
   );
-};
-
-export default ChatAI;
+}

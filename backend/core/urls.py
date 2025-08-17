@@ -27,6 +27,7 @@ urlpatterns = [
 
 
     path("api/test/", include("test_api.urls")),
+    path("api/portfolio/", include("portfolio.urls")),
     # path("", include("userprefs.urls")),   # ← agrega esta línea
     path("api/", include("accounts.urls")),
     path("", include("privacy.urls")),
