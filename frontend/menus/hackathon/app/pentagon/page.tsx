@@ -1,30 +1,15 @@
-"use client";
-import React, { useState } from 'react';
-import Pentagon from '../../components/Pentagon';
+import TestResultsPage from '../../components/barras';
 
-const skillsData = [
-  { name: 'React', value: 80 },
-  { name: 'TypeScript', value: 70 },
-  { name: 'CSS', value: 90 },
-  { name: 'Node', value: 60 },
-  { name: 'SQL', value: 50 },
-];
+const MyPage = () => {
+  const myResults = [
+    { category: "Comunicación", score: 85 },
+    { category: "Trabajo en equipo", score: 70 },
+    { category: "Liderazgo", score: 60 },
+    { category: "Resolución de problemas", score: 90 },
+    { category: "Creatividad", score: 75 },
+  ];
 
-const App: React.FC = () => {
-  const [skills, setSkills] = useState(skillsData);
-
-  const randomizeSkills = () => {
-    setSkills(skills.map(s => ({ ...s, value: Math.floor(Math.random() * 101) })));
-  };
-
-  return (
-    <div style={{ textAlign: 'center', marginTop: 50 }}>
-      <Pentagon skills={skills} size={250} />
-      <button onClick={randomizeSkills} style={{ marginTop: 20 }}>
-        Cambiar habilidades
-      </button>
-    </div>
-  );
+  return <TestResultsPage title="Resultados de Habilidades Blandas" results={myResults} />;
 };
 
-export default App;
+export default MyPage;

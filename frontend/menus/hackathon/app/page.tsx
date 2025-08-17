@@ -7,10 +7,10 @@ import React from 'react';
 export default function HomePage() {
   const skills = [
     { name: 'React', value: 80 },
-    { name: 'TypeScript', value: 70 },
-    { name: 'CSS', value: 90 },
-    { name: 'Node', value: 60 },
     { name: 'SQL', value: 50 },
+        { name: 'SQL', value: 50 },
+            { name: 'SQL', value: 50 },
+            
   ];
 
   const completedTasks = [

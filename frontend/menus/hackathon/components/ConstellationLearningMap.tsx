@@ -154,7 +154,7 @@ function radialLayout(nodes: Node[]) {
   const placed = new Map<string, {x: number, y: number}>();
   const R0 = 120;
   entries.forEach(([level, arr], gi) => {
-    const r = R0 + gi * 120;
+    const r = R0 + gi * 60;
     const count = arr.length;
     for (let i = 0; i < count; i++) {
       const theta = (2 * Math.PI * i) / count + gi * 0.2;
