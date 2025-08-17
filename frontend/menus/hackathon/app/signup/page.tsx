@@ -2,16 +2,38 @@
 
 import { useState, FormEvent } from 'react';
 
+
+import { useRouter } from 'next/navigation';
+
 export default function SignupPage() {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
+  const router = useRouter();
 
   const handleSubmit = (event: FormEvent) => {
     event.preventDefault();
-    console.log('Nombre:', name);
-    console.log('Correo:', email);
-    console.log('Contraseña:', password);
+    setError('');
+    setSuccess('');
+    if (!name || !email || !password) {
+      setError('Completa todos los campos.');
+      return;
+    }
+    // Leer usuarios guardados
+    const users = JSON.parse(localStorage.getItem('users') || '{}');
+    if (users[email]) {
+      setError('Ya existe una cuenta con ese correo.');
+      return;
+    }
+    users[email] = { name, password };
+    localStorage.setItem('users', JSON.stringify(users));
+    setSuccess('Cuenta creada exitosamente. Redirigiendo...');
+    setTimeout(() => {
+      router.push('/login');
+    }, 1200);
   };
 
   return (
@@ -43,15 +65,27 @@ export default function SignupPage() {
         </div>
         <div className="form-group">
           <label htmlFor="password">Contraseña</label>
-          <input
-            type="password"
-            id="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-            className="form-input"
-          />
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <input
+              type={showPassword ? 'text' : 'password'}
+              id="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              className="form-input"
+              style={{ flex: 1 }}
+            />
+            <button
+              type="button"
+              onClick={() => setShowPassword((v) => !v)}
+              style={{ marginLeft: '8px' }}
+            >
+              {showPassword ? 'Ocultar' : 'Ver'}
+            </button>
+          </div>
         </div>
+        {error && <div style={{ color: 'red', marginBottom: '8px' }}>{error}</div>}
+        {success && <div style={{ color: 'green', marginBottom: '8px' }}>{success}</div>}
         <button type="submit" className="signup-button">
           Registrarse
         </button>

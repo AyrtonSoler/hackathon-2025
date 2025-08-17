@@ -2,8 +2,19 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import Pentagon from '../../components/Pentagon';
+"use client";
+import React, { useEffect, useState } from 'react';
 
 export default function ProfilePage() {
+  const [user, setUser] = useState<{ name: string; email: string } | null>(null);
+
+  useEffect(() => {
+    const currentUser = localStorage.getItem('currentUser');
+    if (currentUser) {
+      setUser(JSON.parse(currentUser));
+    }
+  }, []);
+
   return (
     <div className="dashboard-container">
       <header className="dashboard-header">
@@ -17,8 +28,8 @@ export default function ProfilePage() {
           <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
             <Image src="/vercel.svg" alt="Foto de Perfil" width={100} height={100} />
             <div>
-              <p><strong>Nombre:</strong> Nombre del Usuario</p>
-              <p><strong>Correo:</strong> usuario@ejemplo.com</p>
+              <p><strong>Nombre:</strong> {user ? user.name : 'No disponible'}</p>
+              <p><strong>Correo:</strong> {user ? user.email : 'No disponible'}</p>
               <p><strong>Escuela:</strong> Universidad Tecnológica</p>
               <p><strong>Carrera:</strong> Ingeniería en Software</p>
             </div>
@@ -39,7 +50,6 @@ export default function ProfilePage() {
             </ul>
           </div>
         </section>
-
         <section className="card">
           <h2 className="card-title">Habilidades</h2>
           <div className="card-content">
@@ -48,7 +58,6 @@ export default function ProfilePage() {
             </div>
           </div>
         </section>
-
         <section className="card" style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
           <h2 className="card-title" style={{ textAlign: 'center' }}>Competencias y Mapa Estelar</h2>
           <div className="card-content" style={{ textAlign: 'center' }}>
